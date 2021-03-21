@@ -12,17 +12,25 @@ using Elysium.Utils;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "InventorySO", menuName = "Scriptable Objects/Item/Inventory")]
-    public class Inventory : ScriptableObject, ISavable
+    [CreateAssetMenu(fileName = "InventorySO", menuName = "Scriptable Objects/Items/InventorySO")]
+    public class InventorySO : ScriptableObject, ISavable
     {
+        [Separator("Settings", true)]
+        [SerializeField] private bool resizable = false;
         [SerializeField] [Range(0, 100)] private int capacity = 20;
-        [SerializeField] private List<ItemStack> itemStacks = new List<ItemStack>();
-        [SerializeField] private List<ItemStack> defaultItemStacks = new List<ItemStack>();
+        
+        [Separator("Current Items", true)]
+        [SerializeField] private ItemStack[] itemStacks = new ItemStack[20];
+
+        [Separator("Default Items", true)]
+        [SerializeField] private ItemStack[] defaultItemStacks = new ItemStack[20];
+
+        [Separator("All Items", true)]
         [SerializeField] private IInventoryElementDatabase inventoryElementsDatabase;
 
         public int Capacity => capacity;
-        public int Used => itemStacks.Count;
-        public int Free => capacity - itemStacks.Count;
+        public int Used => itemStacks.Where(x => !x.IsNullOrEmpty()).Count();
+        public int Free => capacity - Used;
         public IReadOnlyList<ItemStack> ItemStacks => itemStacks;
 
         public event UnityAction<IInventoryElement, int> OnGained;
@@ -60,7 +68,7 @@ namespace Elysium.Items
         {
             if (_amount < 0) { throw new ArgumentException($"Invalid value for {_amount}. Value must be a positive integer."); }
 
-            if (!HasRequiredSpace(_amount, _item.IsStackable, out int _required))
+            if (!HasRequiredSpace(_item, _amount, _item.IsStackable, out int _required))
             {
                 Debug.LogError($"Not enough space in inventory! | Space: {Free} | Required: {_required}");
                 return false;
@@ -77,7 +85,7 @@ namespace Elysium.Items
             return true;
         }
 
-        public bool Remove(IInventoryElement _item, int _amount)
+        public bool Remove(IInventoryElement _item, int _amount, ItemStack _preferredStack = null)
         {
             if (_amount < 0) { throw new ArgumentException($"Invalid value for {_amount}. Value must be a positive integer."); }
 
@@ -87,12 +95,22 @@ namespace Elysium.Items
                 return false;
             }
 
-            RemoveItemsUntilDone(_item, _amount);
+            RemoveItemsUntilDone(_item, _amount, _preferredStack);
 
             Debug.Log($"Player lost x{_amount} {_item.ItemName}.");
             OnLost?.Invoke(_item, _amount);
             OnValueChanged?.Invoke();
             return true;
+        }
+
+        public void SwapStackContents(ItemStack _origin, ItemStack _destination)
+        {
+            IInventoryElement item = _destination.InventoryElement;
+            int amount = _destination.Amount;
+
+            _destination.SetContents(_origin.InventoryElement, _origin.Amount);
+            _origin.SetContents(item, amount);
+            OnValueChanged?.Invoke();
         }
 
         public T[] GetAllItemsOfType<T>() where T : ScriptableObject
@@ -110,7 +128,9 @@ namespace Elysium.Items
         [ContextMenu("All To Default")]
         private void AddAllElementsToDefault()
         {
-            defaultItemStacks = inventoryElementsDatabase.Elements.Select(x => new ItemStack(x as IInventoryElement, 0)).ToList();
+            defaultItemStacks = inventoryElementsDatabase.Elements
+                .Select(x => ItemStack.WithContents(x as IInventoryElement, 1))
+                .ToArray();
         }
 
         [ContextMenu("Trigger OnValueChanged")]
@@ -119,11 +139,17 @@ namespace Elysium.Items
             OnValueChanged?.Invoke();
         }
 
-        private bool HasRequiredSpace(int _amount, bool _isStackable, out int _required)
+        private bool HasRequiredSpace(IInventoryElement _item, int _amount, bool _isStackable, out int _requiredSpace)
         {
-            int requiredSpace = _isStackable ? 1 : _amount;
-            _required = requiredSpace;
-            return Free >= requiredSpace;
+            int requiredStackableSpace = Contains(_item) ? 0 : 1;
+            _requiredSpace = _isStackable ? requiredStackableSpace : _amount;
+
+            if (resizable && Free < _requiredSpace && (itemStacks.Length + _requiredSpace - Free) < Capacity) 
+            {
+                Array.Resize(ref itemStacks, itemStacks.Length + _requiredSpace - Free); 
+            }
+
+            return Free >= _requiredSpace;
         }
 
         private bool TryAddToExistingStack(IInventoryElement _item, int _amount)
@@ -137,16 +163,18 @@ namespace Elysium.Items
         }
 
         private void AddToNewStack(IInventoryElement _item, int _amount)
-        {
+        {            
             if (_item.IsStackable)
             {
-                itemStacks.Add(new ItemStack(_item, _amount));
+                ItemStack slot = itemStacks.First(x => x.Element == null);
+                slot.SetContents(_item, _amount);
                 return;
             }
 
             for (int i = 0; i < _amount; i++)
             {
-                itemStacks.Add(new ItemStack(_item, 1));
+                ItemStack slot = itemStacks.First(x => x.Element == null);
+                slot.SetContents(_item, 1);
             }
         }
 
@@ -155,18 +183,25 @@ namespace Elysium.Items
             return Quantity(_item) >= _amount;
         }
 
-        private void RemoveItemsUntilDone(IInventoryElement _item, int _amount)
+        private void RemoveItemsUntilDone(IInventoryElement _item, int _amount, ItemStack _preferredStack = null)
         {
+            if (!_preferredStack.IsNullOrEmpty() && _preferredStack.InventoryElement != _item) { throw new System.Exception($"preferred stack's item {_preferredStack.InventoryElement.ItemName} doesnt match item to be removed {_item.ItemName}"); }
+
             void Deduct(int _quantity)
             {
-                ItemStack slot = GetFirstInventorySlotContaining(_item);
+                ItemStack slot = _preferredStack;
+                if (slot.IsNullOrEmpty())
+                {
+                    slot = GetFirstInventorySlotContaining(_item);
+                }
+
                 int prev = slot.Amount;
                 slot.Amount -= _quantity;
 
                 int quantityEffectivelyDeducted = prev - Mathf.Max(slot.Amount, 0);
                 _amount -= quantityEffectivelyDeducted;
 
-                if (slot.Amount <= 0) { itemStacks.Remove(slot); }
+                if (slot.Amount <= 0) { slot.Element = null; }
             }
 
             while (_amount > 0) { Deduct(_amount); }
@@ -192,8 +227,8 @@ namespace Elysium.Items
 
         public void Load(BinaryReader reader)
         {
-            itemStacks = new List<ItemStack>();
             int size = reader.ReadInt32();
+            itemStacks = new ItemStack[size];
 
             for (int i = 0; i < size; i++)
             {
@@ -201,15 +236,15 @@ namespace Elysium.Items
                 int amount = reader.ReadInt32();
 
                 IInventoryElement item = inventoryElementsDatabase.GetElementByName(name);
-                itemStacks.Add(new ItemStack(item, amount));
+                AddToNewStack(item, amount);
             }
         }
 
         public void LoadDefault()
         {
             Debug.Log($"OnLoad: loading default values for inventory {name}");
-            if (defaultItemStacks == null) { defaultItemStacks = new List<ItemStack>(); }
-            itemStacks = new List<ItemStack>(defaultItemStacks);
+            if (defaultItemStacks == null) { defaultItemStacks = new ItemStack[Capacity]; }
+            Array.Copy(defaultItemStacks, itemStacks, Capacity);
             OnValueChanged?.Invoke();
         }
 
@@ -230,11 +265,18 @@ namespace Elysium.Items
         private void OnValidate()
         {
             inventoryElementsDatabase.Refresh();
+
+            if (!resizable)
+            {
+                if (defaultItemStacks.Length != Capacity) { Array.Resize(ref defaultItemStacks, Capacity); }
+                if (itemStacks.Length != Capacity) { Array.Resize(ref itemStacks, Capacity); }
+            }
+
 #if UNITY_EDITOR
             EditorPlayStateNotifier.RegisterOnExitPlayMode(this, () =>
             {
                 // Debug.Log($"OnPlayModeExit: resetting inventory {name}");
-                itemStacks = new List<ItemStack>();
+                itemStacks = new ItemStack[Capacity];
             });
 #endif
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InventoryTest : MonoBehaviour
 {
-    public Inventory inventory;
+    public InventorySO inventory;
     public IInventoryElementDatabase items;
 
     private void OnValidate()

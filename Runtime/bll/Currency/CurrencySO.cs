@@ -7,7 +7,7 @@ using Elysium.Core;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "CurrencySO", menuName = "Scriptable Objects/Item/Currency")]
+    [CreateAssetMenu(fileName = "CurrencySO", menuName = "Scriptable Objects/Items/Currency")]
     public class CurrencySO : SavableLongSO
     {
         [Separator("Currency Details", true)]

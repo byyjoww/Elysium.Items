@@ -9,12 +9,10 @@ namespace Elysium.Items
     public interface IInventoryElement
     {
         string ItemName { get; }
+        Sprite Icon { get; }
         bool IsStackable { get; }
-        // string Description { get; }
-        // Sprite Icon { get; }
-        // int Value { get; }
-        // Action Action { get; }
-        // void Activate();
+        bool IsUsable { get; }
+        void Activate(ItemStack _stack, IInventoryUser _user);
     }
 
     [System.Serializable]

@@ -1,7 +1,8 @@
 {
   "author": "Elysium Entertainment",
   "dependencies": {
-    "com.elysium.core": "1.0.0"
+    "com.elysium.core": "1.0.0",
+    "com.unity.textmeshpro": "2.1.4"
   },
   "displayName": "Elysium.Items",
   "hideInEditor": false,

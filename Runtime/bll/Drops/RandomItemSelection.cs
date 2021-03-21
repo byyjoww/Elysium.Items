@@ -15,7 +15,7 @@ namespace Elysium.Items
                 float r = UnityEngine.Random.Range(0f, 100f);
                 if (r < drop.Value)
                 {
-                    contents.Add(new ItemStack(drop.Key, 1));
+                    contents.Add(ItemStack.WithContents(drop.Key, 1));
                 }
             }
 
@@ -41,7 +41,7 @@ namespace Elysium.Items
 
                 if (random >= minChance && random < minChance + drop.Value)
                 {
-                    contents.Add(new ItemStack(drop.Key, 1));
+                    contents.Add(ItemStack.WithContents(drop.Key, 1));
                     return contents;
                 }
 

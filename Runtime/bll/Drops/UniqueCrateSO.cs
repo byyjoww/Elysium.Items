@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "UniqueCrateSO", menuName = "Scriptable Objects/Item/Crates/Unique")]
+    [CreateAssetMenu(fileName = "UniqueCrateSO", menuName = "Scriptable Objects/Items/Crates/Unique")]
     public class UniqueCrateSO : ScriptableObject
     {
         [SerializeField] private List<ItemDropData> possibleItemsList = new List<ItemDropData>();
