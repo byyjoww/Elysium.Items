@@ -5,11 +5,10 @@ using Elysium.Core;
 using Elysium.Utils.Attributes;
 #if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Elysium.Items
 {
-#endif
-
     [CreateAssetMenu(fileName = "ItemStackEventSO", menuName = "Scriptable Objects/Scriptable Events/Custom/Item Stack Event", order = 1)]
     public class ItemStackEventSO : GenericEventSO<ItemStack>
     {
