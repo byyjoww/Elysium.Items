@@ -1,0 +1,16 @@
+{
+    "name": "elysium.items.runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:37382e0e53e0abc4485f0c991f89fbdf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
