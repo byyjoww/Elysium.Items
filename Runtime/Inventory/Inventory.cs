@@ -13,14 +13,14 @@ namespace Elysium.Items
         protected IItemStackCollection items = default;
 
         public IItemStackCollection Items => items;
+        public int NumOfSlots => Items.Stacks.Count();
 
         public event UnityAction OnItemsChanged = delegate { };
         public event UnityAction OnValueChanged = delegate { };
 
         public Inventory()
         {
-            // items.OnItemsChanged += TriggerOnItemsChanged;
-            // items.OnValueChanged += TriggerOnValueChanged;
+            
         }
 
         public bool Add(IItem _item, int _quantity)
@@ -58,12 +58,12 @@ namespace Elysium.Items
             OnValueChanged?.Invoke();
         }
 
-        private void TriggerOnItemsChanged()
+        protected void TriggerOnItemsChanged()
         {
             OnItemsChanged?.Invoke();
         }
 
-        private void TriggerOnValueChanged()
+        protected void TriggerOnValueChanged()
         {
             OnValueChanged?.Invoke();
         }        

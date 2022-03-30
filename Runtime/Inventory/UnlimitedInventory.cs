@@ -5,6 +5,8 @@
         public UnlimitedInventory()
         {
             items = new UnlimitedItemStackCollection();
+            items.OnItemsChanged += TriggerOnItemsChanged;
+            items.OnValueChanged += TriggerOnValueChanged;
         }
     }
 }
