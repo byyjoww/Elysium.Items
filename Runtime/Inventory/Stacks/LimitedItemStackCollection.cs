@@ -8,14 +8,7 @@ namespace Elysium.Items
 {
     public class LimitedItemStackCollection : ItemStackCollection
     {
-        public class Config
-        {
-            public int DefaultCapacity { get; set; } = 20;
-            public int MinCapacity { get; set; } = 0;
-            public int MaxCapacity { get; set; } = int.MaxValue;
-        }
-
-        private Config config = default;
+        private Capacity config = default;
         private ItemStack[] stacks = default;
 
         public override IEnumerable<IItemStack> Stacks => stacks;
@@ -23,10 +16,10 @@ namespace Elysium.Items
         public IEnumerable<IItemStack> UsedStacks => Stacks.Where(x => !x.IsEmpty);
         public IntValueRange Capacity { get; private set; }
 
-        public LimitedItemStackCollection(Config _config)
+        public LimitedItemStackCollection(Capacity _config)
         {
             config = _config;
-            Capacity = new IntValueRange(config.DefaultCapacity, config.MinCapacity, config.MaxCapacity, config.DefaultCapacity);
+            Capacity = new IntValueRange(config.Default, config.Min, config.Max, config.Default);
             Capacity.OnChanged += TriggerOnValueChanged;
             ResetItemStacks();
         }

@@ -6,7 +6,7 @@ namespace Elysium.Items
     {
         protected LimitedItemStackCollection limitedItemStack => items as LimitedItemStackCollection;
 
-        public LimitedInventory(LimitedItemStackCollection.Config _config)
+        public LimitedInventory(Capacity _config)
         {
             items = new LimitedItemStackCollection(_config);
         }

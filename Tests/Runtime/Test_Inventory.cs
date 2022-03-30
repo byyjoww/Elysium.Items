@@ -20,7 +20,7 @@ namespace Elysium.Items.Tests
             IInventory[] inventories = new IInventory[]
             {
                 new UnlimitedInventory(),
-                new LimitedInventory(new LimitedItemStackCollection.Config{ DefaultCapacity = 20 }),
+                new LimitedInventory(new Capacity{ Default = 20 }),
             };
 
             foreach (var inventory in inventories)
@@ -40,7 +40,7 @@ namespace Elysium.Items.Tests
             IInventory[] inventories = new IInventory[]
             {
                 new UnlimitedInventory(),
-                new LimitedInventory(new LimitedItemStackCollection.Config{ DefaultCapacity = 20 }),
+                new LimitedInventory(new Capacity{ Default = 20 }),
             };
 
             foreach (var inventory in inventories)
@@ -69,7 +69,7 @@ namespace Elysium.Items.Tests
             IInventory[] inventories = new IInventory[]
             {
                 new UnlimitedInventory(),
-                new LimitedInventory(new LimitedItemStackCollection.Config{ DefaultCapacity = 20 }),
+                new LimitedInventory(new Capacity{ Default = 20 }),
             };
 
             foreach (var inventory in inventories)
@@ -86,7 +86,7 @@ namespace Elysium.Items.Tests
             IInventory[] inventories = new IInventory[]
             {
                 new UnlimitedInventory(),
-                new LimitedInventory(new LimitedItemStackCollection.Config{ DefaultCapacity = 20 }),
+                new LimitedInventory(new Capacity{ Default = 20 }),
             };
 
             foreach (var inventory in inventories)
@@ -107,7 +107,7 @@ namespace Elysium.Items.Tests
             IInventory[] inventories = new IInventory[]
             {
                 new UnlimitedInventory(),
-                new LimitedInventory(new LimitedItemStackCollection.Config{ DefaultCapacity = 20 }),
+                new LimitedInventory(new Capacity{ Default = 20 }),
             };
 
             foreach (var inventory in inventories)
@@ -127,13 +127,13 @@ namespace Elysium.Items.Tests
         {
             IItem item1 = new Item();
 
-            IInventory inventory1 = new LimitedInventory(new LimitedItemStackCollection.Config { DefaultCapacity = 10 });
+            IInventory inventory1 = new LimitedInventory(new Capacity{ Default = 10 });
             Assert.AreEqual(true, inventory1.Add(item1, 10));
             Assert.AreEqual(10, inventory1.Quantity(item1));
             Assert.AreEqual(false, inventory1.Add(item1, 1));
             Assert.AreEqual(10, inventory1.Quantity(item1));
 
-            IInventory inventory2 = new LimitedInventory(new LimitedItemStackCollection.Config { DefaultCapacity = 11 });
+            IInventory inventory2 = new LimitedInventory(new Capacity{ Default = 11 });
             Assert.AreEqual(true, inventory2.Add(item1, 10));
             Assert.AreEqual(10, inventory2.Quantity(item1));
             Assert.AreEqual(true, inventory2.Add(item1, 1));
@@ -146,7 +146,7 @@ namespace Elysium.Items.Tests
             IItem item1 = new Item();
             IItem item2 = new Item();
 
-            LimitedInventory inventory = new LimitedInventory(new LimitedItemStackCollection.Config { DefaultCapacity = 10 });
+            LimitedInventory inventory = new LimitedInventory(new Capacity{ Default = 10 });
             Assert.AreEqual(true, inventory.Add(item1, 10));
             Assert.AreEqual(10, inventory.Quantity(item1));
             Assert.AreEqual(false, inventory.Add(item1, 1));
