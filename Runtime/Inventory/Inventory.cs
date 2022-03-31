@@ -10,57 +10,41 @@ namespace Elysium.Items
 {
     public abstract class Inventory : IInventory
     {
-        protected IItemStackCollection items = default;
-
-        public IItemStackCollection Items => items;
+        public abstract IItemStackCollection Items { get; }
         public int NumOfSlots => Items.Stacks.Count();
 
-        public event UnityAction OnItemsChanged = delegate { };
         public event UnityAction OnValueChanged = delegate { };
 
-        public Inventory()
-        {
-            
-        }
+        protected Inventory() { }
 
         public bool Add(IItem _item, int _quantity)
         {
-            return items.Add(_item, _quantity);
+            return Items.Add(_item, _quantity);
         }
 
         public bool Remove(IItem _item, int _quantity)
         {
-            return items.Remove(_item, _quantity);
+            return Items.Remove(_item, _quantity);
         }
 
         public bool Contains(IItem _item)
         {
-            return items.Contains(_item);
+            return Items.Contains(_item);
         }
 
         public int Quantity(IItem _item)
         {
-            return items.Quantity(_item);
+            return Items.Quantity(_item);
         }
 
         public void Empty()
         {
-            items.Empty();
+            Items.Empty();
         }
 
         public void Swap(IItemStack _origin, IItemStack _destination)
         {
-            IItem item = _destination.Item;
-            int quantity = _destination.Quantity;
-
-            _destination.Set(_origin.Item, _origin.Quantity);
-            _origin.Set(item, quantity);
-            OnValueChanged?.Invoke();
-        }
-
-        protected void TriggerOnItemsChanged()
-        {
-            OnItemsChanged?.Invoke();
+            Items.Swap(_origin, _destination);
         }
 
         protected void TriggerOnValueChanged()
@@ -70,8 +54,7 @@ namespace Elysium.Items
 
         ~Inventory()
         {
-            items.OnItemsChanged -= TriggerOnItemsChanged;
-            items.OnValueChanged -= TriggerOnValueChanged;
+            Items.OnValueChanged.RemoveAllListeners();
         }
     }
 }

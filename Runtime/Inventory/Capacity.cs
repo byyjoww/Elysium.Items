@@ -1,9 +1,12 @@
-﻿namespace Elysium.Items
+﻿using UnityEngine;
+
+namespace Elysium.Items
 {
+    [System.Serializable]
     public class Capacity
     {
-        public int Default { get; set; } = 20;
-        public int Min { get; set; } = 0;
-        public int Max { get; set; } = int.MaxValue;
+        [field: SerializeField] public int Default { get; set; } = 20;
+        [field: SerializeField] public int Min { get; set; } = 0;
+        [field: SerializeField] public int Max { get; set; } = int.MaxValue;
     }
 }

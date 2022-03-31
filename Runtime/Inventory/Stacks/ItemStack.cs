@@ -63,5 +63,10 @@ namespace Elysium.Items
             quantity = 0;
             item = null;
         }
+
+        public new string ToString()
+        {
+            return $"x{quantity} {item.Name}";
+        }
     }
 }

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 32
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b58b5e961351248a51d1be14292c8a, type: 3}
+  m_Name: LimitedInventorySO_Test
+  m_EditorClassIdentifier: 
+  capacity:
+    <Default>k__BackingField: 10
+    <Min>k__BackingField: 0
+    <Max>k__BackingField: 2147483647

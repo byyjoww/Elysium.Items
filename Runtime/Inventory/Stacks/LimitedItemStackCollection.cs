@@ -8,32 +8,32 @@ namespace Elysium.Items
 {
     public class LimitedItemStackCollection : ItemStackCollection
     {
-        private Capacity config = default;
-        private ItemStack[] stacks = default;
+        private IItemStack[] stacks = default;
 
         public override IEnumerable<IItemStack> Stacks => stacks;
         public IEnumerable<IItemStack> EmptyStacks => Stacks.Where(x => x.IsEmpty);
         public IEnumerable<IItemStack> UsedStacks => Stacks.Where(x => !x.IsEmpty);
         public IntValueRange Capacity { get; private set; }
 
-        public LimitedItemStackCollection(Capacity _config)
+        public LimitedItemStackCollection(IEnumerable<IItemStack> _stacks, Capacity _capacity, int _currentCapacity)
         {
-            config = _config;
-            Capacity = new IntValueRange(config.Default, config.Min, config.Max, config.Default);
+            if (_stacks.Count() > _currentCapacity)
+            {
+                throw new System.Exception($"number of item stacks ({_stacks.Count()}) is smaller than inventory capacity ({_currentCapacity})");
+            }
+
+            Capacity = new IntValueRange(_currentCapacity, _capacity.Min, _capacity.Max, _capacity.Default);
             Capacity.OnChanged += TriggerOnValueChanged;
-            ResetItemStacks();
+            stacks = _stacks.ToArray();
+            ResizeAndInitializeStacks(Capacity.Value);
         }
 
         public bool Expand(int _quantity)
         {
             bool success = Capacity.Add(_quantity);
-            if (success) 
-            { 
-                Array.Resize(ref stacks, Capacity.Value);
-                for (int i = 0; i < stacks.Length; i++)
-                {
-                    if (stacks[i] == null) { stacks[i] = new ItemStack(); }
-                }
+            if (success)
+            {
+                ResizeAndInitializeStacks(Capacity.Value);
             }
             return success;
         }
@@ -58,7 +58,7 @@ namespace Elysium.Items
         protected override bool HasSpace(IItem _item, int _quantity)
         {
             if (_item is null) { return false; }
-            ItemStack existing = stacks.FirstOrDefault(x => x.Item == _item);
+            IItemStack existing = stacks.FirstOrDefault(x => x.Item == _item);
             int existingStackSpace = existing != null ? _item.MaxStack - existing.Quantity : 0;
             int emptyStackSpace = EmptyStacks.Count() * _item.MaxStack;
             return (emptyStackSpace + existingStackSpace) >= _quantity;
@@ -99,6 +99,15 @@ namespace Elysium.Items
                 items.Add(new ItemStack(stack.Item, stack.Quantity));
             }            
             return items;
+        }
+
+        private void ResizeAndInitializeStacks(int _size)
+        {
+            Array.Resize(ref stacks, _size);
+            for (int i = 0; i < stacks.Length; i++)
+            {
+                if (stacks[i] == null) { stacks[i] = new ItemStack(); }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using System;
+using UnityEngine.Events;
 
 namespace Elysium.Items
 {
@@ -7,7 +8,6 @@ namespace Elysium.Items
         IItemStackCollection Items { get; }
 
         event UnityAction OnValueChanged;
-        event UnityAction OnItemsChanged;
 
         bool Add(IItem _item, int _quantity);
         bool Remove(IItem _item, int _quantity);

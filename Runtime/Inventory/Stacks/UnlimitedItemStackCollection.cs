@@ -7,18 +7,18 @@ namespace Elysium.Items
 {
     public class UnlimitedItemStackCollection : ItemStackCollection
     {
-        private List<ItemStack> stacks = default;
+        private List<IItemStack> stacks = default;
 
         public override IEnumerable<IItemStack> Stacks => stacks;
 
-        public UnlimitedItemStackCollection()
+        public UnlimitedItemStackCollection(IEnumerable<IItemStack> _stacks)
         {
-            ResetItemStacks();
+            stacks = _stacks.ToList();
         }
 
         protected override void ResetItemStacks()
         {
-            stacks = new List<ItemStack>();
+            stacks = new List<IItemStack>();
         }
 
         protected override bool HasSpace(IItem _item, int _quantity)

@@ -14,5 +14,6 @@
         void Set(IItem _item);
         void Set(IItem _item, int _value);
         void Set(int _value);
+        string ToString();
     }
 }

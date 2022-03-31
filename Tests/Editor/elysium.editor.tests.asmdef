@@ -1,10 +1,11 @@
 {
-    "name": "elysium.runtime.tests",
+    "name": "elysium.editor.tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "elysium.items.runtime"
+        "elysium.items.runtime",
+        "elysium.core.runtime"
     ],
     "includePlatforms": [
         "Editor"

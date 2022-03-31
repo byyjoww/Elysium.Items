@@ -8,13 +8,13 @@ namespace Elysium.Items
     {
         IEnumerable<IItemStack> Stacks { get; }
 
-        event UnityAction OnItemsChanged;
-        event UnityAction OnValueChanged;
+        UnityEvent OnValueChanged { get; }
 
         bool Add(IItem _item, int _quantity);
         bool Remove(IItem _item, int _quantity);
         bool Contains(IItem _item);
         int Quantity(IItem _item);
         void Empty();
+        void Swap(IItemStack _origin, IItemStack _destination);
     }
 }

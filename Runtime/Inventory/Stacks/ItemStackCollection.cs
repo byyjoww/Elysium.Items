@@ -10,8 +10,7 @@ namespace Elysium.Items
     {
         public abstract IEnumerable<IItemStack> Stacks { get; }
 
-        public event UnityAction OnItemsChanged = delegate { };
-        public event UnityAction OnValueChanged = delegate { };
+        public UnityEvent OnValueChanged { get; } = new UnityEvent();
 
         public virtual bool Add(IItem _item, int _quantity)
         {
@@ -42,17 +41,27 @@ namespace Elysium.Items
 
         public bool Contains(IItem _item)
         {
-            return Stacks.Any(x => !x.IsEmpty && x.Item == _item);
+            return Stacks.Any(x => !x.IsEmpty && x.Item.Equals(_item));
         }
 
         public virtual int Quantity(IItem _item)
         {
-            return Stacks.Where(x => x.Item == _item).Sum(x => x.Quantity);
+            return Stacks.Where(x => !x.IsEmpty && x.Item.Equals(_item)).Sum(x => x.Quantity);
         }
 
         public virtual void Empty()
         {
             ResetItemStacks();
+            TriggerOnValueChanged();
+        }
+
+        public void Swap(IItemStack _origin, IItemStack _destination)
+        {
+            IItem item = _destination.Item;
+            int quantity = _destination.Quantity;
+
+            _destination.Set(_origin.Item, _origin.Quantity);
+            _origin.Set(item, quantity);
             TriggerOnValueChanged();
         }
 
@@ -107,15 +116,9 @@ namespace Elysium.Items
             return Stacks.Where(x => x.Item == _item);
         }
 
-        protected void TriggerOnItemsChanged()
-        {
-            OnItemsChanged?.Invoke();
-        }
-
         protected void TriggerOnValueChanged()
         {
             OnValueChanged?.Invoke();
-            TriggerOnItemsChanged();
         }
     }
 }
