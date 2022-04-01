@@ -9,26 +9,34 @@ namespace Elysium.Items
         private const int MIN_VALUE = 0;
         private const int MAX_VALUE = int.MaxValue;
 
-        private string id = default;
+        private Guid id = default;
         private IItem item = default;
         private int quantity = default;
 
-        public string ID => id;
+        public Guid ID => id;
         public IItem Item => item;
         public int Quantity => quantity;
         public bool IsFull => item != null && quantity >= Item.MaxStack;
         public bool IsEmpty => item == null;
 
-        public ItemStack()
+        public ItemStack(Guid _stackID)
         {
-            id = Guid.NewGuid().ToString();
+            id = _stackID;
             Set(null, MIN_VALUE);
         }
 
-        public ItemStack(IItem _item, int _quantity)
+        public static ItemStack New()
         {
-            id = Guid.NewGuid().ToString();
-            Set(_item, _quantity);
+            var stack = new ItemStack(Guid.NewGuid());
+            stack.Set(null, MIN_VALUE);
+            return stack;
+        }
+
+        public static ItemStack WithContents(IItem _item, int _amount)
+        {
+            var stack = new ItemStack(Guid.NewGuid());
+            stack.Set(_item, _amount);
+            return stack;
         }
 
         public void Add(int _quantity)

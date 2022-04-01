@@ -41,7 +41,7 @@ namespace Elysium.Items
             var items = new List<IItemStack>();
             foreach (var item in itemDictionary)
             {
-                IItemStack stack = new ItemStack(new GenericItem(item.Key, item.Key), Convert.ToInt32(item.Value));
+                IItemStack stack = ItemStack.WithContents(new GenericItem(item.Key, item.Key), Convert.ToInt32(item.Value));
                 items.Add(stack);
                 Debug.Log($"loaded stack {stack.ToString()}");
             }

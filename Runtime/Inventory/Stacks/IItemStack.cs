@@ -1,8 +1,10 @@
-﻿namespace Elysium.Items
+﻿using System;
+
+namespace Elysium.Items
 {
     public interface IItemStack
     {
-        string ID { get; }
+        Guid ID { get; }
         bool IsEmpty { get; }
         bool IsFull { get; }
         IItem Item { get; }

@@ -51,7 +51,7 @@ namespace Elysium.Items
             stacks = new ItemStack[Capacity.Value];
             for (int i = 0; i < stacks.Length; i++)
             {
-                stacks[i] = new ItemStack();
+                stacks[i] = ItemStack.New();
             }
         }
 
@@ -96,7 +96,7 @@ namespace Elysium.Items
             for (int i = 0; i < excess; i++)
             {                
                 IItemStack stack = stacks.Last();
-                items.Add(new ItemStack(stack.Item, stack.Quantity));
+                items.Add(ItemStack.WithContents(stack.Item, stack.Quantity));
             }            
             return items;
         }
@@ -106,7 +106,7 @@ namespace Elysium.Items
             Array.Resize(ref stacks, _size);
             for (int i = 0; i < stacks.Length; i++)
             {
-                if (stacks[i] == null) { stacks[i] = new ItemStack(); }
+                if (stacks[i] == null) { stacks[i] = ItemStack.New(); }
             }
         }
     }

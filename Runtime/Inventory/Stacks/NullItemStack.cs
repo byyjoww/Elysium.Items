@@ -1,9 +1,11 @@
-﻿namespace Elysium.Items
+﻿using System;
+
+namespace Elysium.Items
 {
     public class NullItemStack : IItemStack
     {
         private IItem item = new NullItem();
-        public string ID => "0";
+        public Guid ID => Guid.Empty;
         public bool IsEmpty => true;
         public bool IsFull => false;
         public IItem Item => item;
