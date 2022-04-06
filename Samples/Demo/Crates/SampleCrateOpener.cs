@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEditor;
 
-namespace Elysium.Items.Samples
+namespace Elysium.Items.Samples.Crates
 {
     public class SampleCrateOpener : MonoBehaviour
     {

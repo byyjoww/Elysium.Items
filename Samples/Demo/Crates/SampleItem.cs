@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Elysium.Items.Samples
+namespace Elysium.Items.Samples.Crates
 {
     public class SampleItem : IItem
     {
@@ -19,7 +19,7 @@ namespace Elysium.Items.Samples
         public SampleItem(string _name, string _icon)
         {
             name = _name;
-            icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Packages/com.elysium.items/Samples/Demo/Textures/{_icon}.png");
+            icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Packages/com.elysium.items/Samples/Demo/Crates/Textures/{_icon}.png");
         }
     }
 }

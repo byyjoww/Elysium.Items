@@ -8,9 +8,10 @@ namespace Elysium.Items.UI
     public class UI_Inventory : MonoBehaviour
     {
         [Separator("Default", true)]
-        [SerializeField] protected InventorySO defaultInventory = default;
-        [SerializeField] protected UseItemEventSO defaultUseItemEvent = default;
-        [SerializeField] protected InventoryFilterConfigSO defaultFilterConfig = default;
+        [SerializeField] protected bool setDefaultInspectorValues = true;
+        [SerializeField, ConditionalField(nameof(setDefaultInspectorValues))] protected InventorySO defaultInventory = default;
+        [SerializeField, ConditionalField(nameof(setDefaultInspectorValues))] protected UseItemEventSO defaultUseItemEvent = default;
+        [SerializeField, ConditionalField(nameof(setDefaultInspectorValues))] protected InventoryFilterConfigSO defaultFilterConfig = default;
 
         [Separator("Settings", true)]
         [SerializeField] protected int numOfLastRowElements = 0;
@@ -18,10 +19,10 @@ namespace Elysium.Items.UI
         [SerializeField, ConditionalField("minNumOfSlotsByCapacity", true)] protected int minNumberOfSlots = 0;
 
         [Separator("View")]
-        [SerializeField] protected InventorySlotPoolView view = default;
+        [SerializeField] protected VisualInventorySlotPoolView view = default;
 
         [Separator("Filters", true)]
-        [SerializeField] protected InventoryFilter filter = default;
+        [SerializeField] protected TMPDropdownInventoryFilterer filter = default;
 
         [Separator("Tooltip", true)]
         [SerializeField] protected InventoryTooltip tooltip = default;
@@ -32,15 +33,15 @@ namespace Elysium.Items.UI
         protected bool triggerEventOnAllItems { get; set; }
 
         public void Open() => OpenInternal(defaultInventory, defaultFilterConfig, defaultUseItemEvent, false);
-        public void Open(InventorySO _inventory) => OpenInternal(_inventory, defaultFilterConfig, defaultUseItemEvent, true);
-        public void Open(InventorySO _inventory, IItemFilterConfig _config) => OpenInternal(_inventory, _config, defaultUseItemEvent, true);
-        public void Open(InventorySO _inventory, IUseItemEvent _event) => OpenInternal(_inventory, defaultFilterConfig, _event, true);
+        public void Open(IInventory _inventory) => OpenInternal(_inventory, defaultFilterConfig, defaultUseItemEvent, true);
+        public void Open(IInventory _inventory, IItemFilterConfig _config) => OpenInternal(_inventory, _config, defaultUseItemEvent, true);
+        public void Open(IInventory _inventory, IUseItemEvent _event) => OpenInternal(_inventory, defaultFilterConfig, _event, true);
         public void Open(IItemFilterConfig _config) => OpenInternal(defaultInventory, _config, defaultUseItemEvent, true);
         public void Open(IItemFilterConfig _config, IUseItemEvent _event) => OpenInternal(defaultInventory, _config, _event, true);
         public void Open(IUseItemEvent _event) => OpenInternal(defaultInventory, defaultFilterConfig, _event, true);
-        public void Open(InventorySO _inventory, IItemFilterConfig _config, IUseItemEvent _event) => OpenInternal(_inventory, _config, _event, true);
+        public void Open(IInventory _inventory, IItemFilterConfig _config, IUseItemEvent _event) => OpenInternal(_inventory, _config, _event, true);
 
-        protected virtual void OpenInternal(InventorySO _inventory, IItemFilterConfig _config, IUseItemEvent _event, bool _triggerEventOnAllItems)
+        protected virtual void OpenInternal(IInventory _inventory, IItemFilterConfig _config, IUseItemEvent _event, bool _triggerEventOnAllItems)
         {
             this.triggerEventOnAllItems = _triggerEventOnAllItems;
             this.activeEvent = _event;
@@ -79,9 +80,9 @@ namespace Elysium.Items.UI
             var ordered = activeInventory.Items.Stacks.OrderByDescending(x => !Invisible(x)).ToList();
             for (int i = 0; i < numOfSlots; i++)
             {
-                UI_InventorySlot slot = objs[i];
+                IVisualInventorySlot slot = objs.ElementAt(i);
                 IItemStack stack = GetStack(ordered, i);
-                slot.Setup(new UI_InventorySlot.Config
+                slot.Setup(new VisualInventorySlotConfig
                 {
                     Inventory = activeInventory,
                     Stack = stack,

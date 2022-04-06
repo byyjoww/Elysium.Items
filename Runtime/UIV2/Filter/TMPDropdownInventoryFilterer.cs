@@ -10,7 +10,7 @@ using UnityEngine.Events;
 namespace Elysium.Items.UI
 {
     [System.Serializable]
-    public class InventoryFilter
+    public class TMPDropdownInventoryFilterer : IInventoryFilterer
     {
         [SerializeField] private bool enabled = false;
         [SerializeField, ConditionalField("enabled")] private TMP_Dropdown dropdown = default;
@@ -37,6 +37,11 @@ namespace Elysium.Items.UI
             SetDefaultFilter();
 
             dropdown.gameObject.SetActive(_config.Visible);
+        }
+
+        public bool Evaluate(IItem _item)
+        {
+            return Active.Evaluate(_item);
         }
 
         public void End()

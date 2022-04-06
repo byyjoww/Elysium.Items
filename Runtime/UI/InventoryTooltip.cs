@@ -6,13 +6,13 @@ using UnityEngine.Events;
 namespace Elysium.Items.UI
 {
     [System.Serializable]
-    public class InventoryTooltip
+    public class InventoryTooltip : IInventoryTooltip
     {
         [SerializeField] private bool enabled = false;
 
         [RequireInterface(typeof(ITooltip))]
-        [SerializeField, ConditionalField("enabled")] private UnityEngine.Object tooltip = default;
-        [SerializeField, ConditionalField("enabled")] private BoolValueSO showTooltip = default;
+        [SerializeField, ConditionalField(nameof(enabled))] private UnityEngine.Object tooltip = default;
+        [SerializeField, ConditionalField(nameof(enabled))] private BoolValueSO showTooltip = default;
 
         public bool Show
         {

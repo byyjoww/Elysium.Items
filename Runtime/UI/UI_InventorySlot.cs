@@ -5,15 +5,9 @@ using UnityEngine.UI;
 
 namespace Elysium.Items.UI
 {
-    public class UI_InventorySlot : MonoBehaviour
-    {
-        public class Config
-        {
-            public IInventory Inventory { get; set; }
-            public IItemStack Stack { get; set; }
-            public IUseItemEvent Event { get; set; }
-        }
 
+    public class UI_InventorySlot : MonoBehaviour, IVisualInventorySlot
+    {
         [Header("Icon")]
         [SerializeField] protected Image iconImageComponent = default;
 
@@ -41,7 +35,7 @@ namespace Elysium.Items.UI
             draggable.enabled = false;
         }
 
-        public virtual void Setup(Config _config)
+        public virtual void Setup(VisualInventorySlotConfig _config)
         {
             this.stack = _config.Stack;
             this.inventory = _config.Inventory;
@@ -85,8 +79,13 @@ namespace Elysium.Items.UI
             var slot = _draggable.GetComponent<UI_InventorySlot>();
             if (slot == null) { throw new System.Exception("draggable was dropped without containing a UI_InventorySlot script"); }
 
-            Debug.Log("swapping stack contents");
+            Debug.Log($"swapping stack contents. dropped {slot.stack.Item?.Name} on {stack.Item?.Name}");
             inventory.Swap(slot.stack, stack);
+        }
+
+        public void Swap(IItemStack _stack)
+        {
+            inventory.Swap(stack, _stack);
         }
     }
 }

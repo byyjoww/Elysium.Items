@@ -63,6 +63,7 @@ namespace Elysium.Items
             _destination.Set(_origin.Item, _origin.Quantity);
             _origin.Set(item, quantity);
             TriggerOnValueChanged();
+            Debug.Log($"swapped stacks for {_origin.Item?.Name} and {_destination.Item?.Name}");
         }
 
         protected abstract void ResetItemStacks();
