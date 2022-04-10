@@ -112,7 +112,7 @@ namespace Elysium.Items
             _target.Set(this.item, this.quantity);
             Set(otherItem, otherQuantity);
 
-            Debug.Log($"swapped stacks for {Item?.Name} and {_target.Item?.Name}");
+            Debug.Log($"swapped stacks for {ToString()} and {_target.ToString()}");
         }
 
         public new string ToString()

@@ -22,6 +22,7 @@ namespace Elysium.Items
         {
             DisposeStacks(stacks);
             stacks = new List<IItemStack>();
+            TriggerOnValueChanged();
         }
 
         protected override bool HasSpace(IItem _item, int _quantity)

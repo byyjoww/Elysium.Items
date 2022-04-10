@@ -224,7 +224,8 @@ namespace Elysium.Items.Tests
         [Test]
         public void TestEvents()
         {
-            IItem item1 = new GenericItem();
+            IItem item1 = new GenericItem(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            IItem item2 = new GenericItem(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             IInventory[] inventories = new IInventory[]
             {
                 UnlimitedInventory.New(),
@@ -238,27 +239,30 @@ namespace Elysium.Items.Tests
             foreach (var inventory in inventories)
             {
                 int onValueChangedTriggers = 0;
-
                 void TriggerOnValueChanged() => onValueChangedTriggers++;
-
                 inventory.OnValueChanged += TriggerOnValueChanged;
 
-                inventory.Add(item1, 1);
-                Assert.AreEqual(1, onValueChangedTriggers);
+                var actions = new Action[]
+                {
+                    delegate { inventory.Add(item1, 1); },
+                    delegate { inventory.Remove(item1, 1); },
+                    delegate { inventory.Add(item1, 1); },
+                    delegate { inventory.Add(item2, 1); },                    
+                    delegate {
+                        IItemStack stack1 = inventory.Items.Stacks.ElementAt(0);
+                        IItemStack stack2 = inventory.Items.Stacks.ElementAt(1);
+                        stack1.SwapContents(stack2);                      
+                    },
+                     delegate { inventory.Empty(); },
+                };
 
-                inventory.Add(item1, 3);
-                Assert.AreEqual(2, onValueChangedTriggers);
-
-                inventory.Remove(item1, 1);
-                Assert.AreEqual(3, onValueChangedTriggers);
-
-                IItemStack stack1 = inventory.Items.Stacks.ElementAt(0);
-                IItemStack stack2 = inventory.Items.Stacks.ElementAt(1);
-                stack1.SwapContents(stack2);
-                Assert.AreEqual(4, onValueChangedTriggers);
-
-                inventory.Empty();
-                Assert.AreEqual(5, onValueChangedTriggers);
+                foreach (var action in actions)
+                {
+                    Debug.Log($"running action {action}");
+                    int prev = onValueChangedTriggers;
+                    action?.Invoke();
+                    Assert.Greater(onValueChangedTriggers, prev);
+                }
 
                 inventory.OnValueChanged -= TriggerOnValueChanged;
             }

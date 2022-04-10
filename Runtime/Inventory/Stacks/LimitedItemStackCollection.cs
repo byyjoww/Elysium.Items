@@ -56,6 +56,7 @@ namespace Elysium.Items
             {
                 stacks[i] = CreateStack();
             }
+            TriggerOnValueChanged();
         }
 
         protected override bool HasSpace(IItem _item, int _quantity)
