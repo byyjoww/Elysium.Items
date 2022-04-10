@@ -20,8 +20,9 @@ namespace Elysium.Items
         public bool IsFull => item != null && quantity >= Item.MaxStack;
         public bool IsEmpty => item == null;
 
-        public event UnityAction OnSwap = delegate { };
         public event UnityAction OnValueChanged = delegate { };
+        public event UnityAction OnFull = delegate { };
+        public event UnityAction OnEmpty = delegate { };
 
         public ItemStack(Guid _stackID)
         {
@@ -76,28 +77,31 @@ namespace Elysium.Items
         {
             var prev = quantity;
             SetInternal(_value);
-            if (prev != quantity) { OnValueChanged?.Invoke(); }
+            if (prev != quantity) { OnValueChanged?.Invoke(); }            
         }
 
         private void SetInternal(int _value)
         {
             quantity = Mathf.Clamp(_value, MIN_VALUE, MAX_VALUE);
             if (quantity <= 0) { Empty(); }
+            if (IsFull) { OnFull?.Invoke(); }
         }
 
         public void Empty()
         {
             quantity = MIN_VALUE;
             item = null;
+            OnEmpty?.Invoke();
         }
 
-        public void Use(IItemUser _user, int _numOfTimes = 1)
+        public bool Use(IItemUser _user, int _numOfItemsToUse = 1)
         {
-            if (quantity < _numOfTimes) { return; }
-            for (int i = 0; i < _numOfTimes; i++)
+            if (quantity < _numOfItemsToUse) { return false; }
+            for (int i = 0; i < _numOfItemsToUse; i++)
             {
-                item.Use(_user);
+                item.Use(this, _user);
             }
+            return true;
         }
 
         public void SwapContents(IItemStack _target)
@@ -107,7 +111,6 @@ namespace Elysium.Items
 
             _target.Set(this.item, this.quantity);
             Set(otherItem, otherQuantity);
-            OnSwap?.Invoke();
 
             Debug.Log($"swapped stacks for {Item?.Name} and {_target.Item?.Name}");
         }

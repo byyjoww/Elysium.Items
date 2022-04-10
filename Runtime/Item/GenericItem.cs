@@ -35,7 +35,7 @@ namespace Elysium.Items
             this.instanceID = Guid.Parse(_instanceID);
         }
 
-        public virtual void Use(IItemUser _user)
+        public virtual void Use(IItemStack _stack, IItemUser _user)
         {
             
         }

@@ -14,11 +14,11 @@ namespace Elysium.Items
         int MaxStack { get; }
         bool IsUsable { get; }
 
-        void Use(IItemUser _user);
+        void Use(IItemStack _stack, IItemUser _user);
     }
 
     public interface IItem<T> : IItem where T : IItemUser
     {
-        void Use(T _user);
+        void Use(IItemStack _stack, T _user);
     }
 }

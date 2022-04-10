@@ -11,8 +11,9 @@ namespace Elysium.Items
         IItem Item { get; }
         int Quantity { get; }
 
-        event UnityAction OnSwap;
         event UnityAction OnValueChanged;
+        event UnityAction OnFull;
+        event UnityAction OnEmpty;
 
         void Add(int _quantity);
         void Empty();
@@ -21,7 +22,7 @@ namespace Elysium.Items
         void Set(IItem _item, int _value);
         void Set(int _value);
         void SwapContents(IItemStack _target);
-        void Use(IItemUser _user, int _numOfTimes = 1);
+        bool Use(IItemUser _user, int _numOfTimes = 1);
         string ToString();        
     }
 }

@@ -22,7 +22,7 @@ namespace Elysium.Items
         public int MaxStack => maxStack;
         public bool IsUsable => usable;
 
-        public virtual void Use(IItemUser _user)
+        public virtual void Use(IItemStack _stack, IItemUser _user)
         {
             
         }

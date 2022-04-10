@@ -12,7 +12,8 @@ namespace Elysium.Items
         public IItem Item => item;
         public int Quantity => 0;
 
-        public event UnityAction OnSwap = delegate { };
+        public event UnityAction OnFull = delegate { };
+        public event UnityAction OnEmpty = delegate { };
         public event UnityAction OnValueChanged = delegate { };       
 
         public void Add(int _quantity)
@@ -50,9 +51,9 @@ namespace Elysium.Items
             
         }
 
-        public void Use(IItemUser _user, int _numOfTimes = 1)
+        public bool Use(IItemUser _user, int _numOfTimes = 1)
         {
-            
+            return false;
         }
     }
 }

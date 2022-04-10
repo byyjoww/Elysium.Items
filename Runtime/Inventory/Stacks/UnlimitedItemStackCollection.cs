@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -54,6 +55,19 @@ namespace Elysium.Items
             }
             _remaining -= qtyToRemove;
             return _remaining;
+        }
+
+        protected override void BindStacks(IItemStack _stack)
+        {
+            base.BindStacks(_stack);
+            void CullStack()
+            {
+                _stack.OnEmpty -= CullStack;
+                DisposeStacks(_stack);
+                stacks.Remove(_stack);
+                TriggerOnValueChanged();
+            }
+            _stack.OnEmpty += CullStack;
         }
     }
 }

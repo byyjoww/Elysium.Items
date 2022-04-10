@@ -21,7 +21,7 @@ namespace Elysium.Items
             icon = Resources.Load<Sprite>("empty");
         }
 
-        public void Use(IItemUser _user)
+        public void Use(IItemStack _stack, IItemUser _user)
         {
             
         }

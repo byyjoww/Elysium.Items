@@ -20,7 +20,7 @@ namespace Elysium.Items.Samples.Crates
             Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Packages/com.elysium.items/Samples/Demo/Crates/Textures/{_icon}.png");
         }
 
-        public void Use(IItemUser _user)
+        public void Use(IItemStack _stack, IItemUser _user)
         {
             Debug.Log($"Item {Name} has been used");
         }

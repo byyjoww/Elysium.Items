@@ -24,7 +24,6 @@ namespace Elysium.Items
             // Debug.Log($"Added {remainingAfterAddingToExistingStacks - remainingAfterAddingToNewStacks} items to new stacks.");
 
             if (remainingAfterAddingToNewStacks > 0) { throw new System.Exception($"There are still {remainingAfterAddingToNewStacks} items that need to be added to the inventory"); }
-            TriggerOnValueChanged();
             return true;
         }
 
@@ -36,7 +35,6 @@ namespace Elysium.Items
             int remaining = RemoveFromExistingStacks(_item, _quantity);
 
             if (remaining > 0) { throw new System.Exception($"There are still {remaining} items that need to be removed from the inventory"); }
-            TriggerOnValueChanged();
             return true;
         }
 
@@ -53,7 +51,6 @@ namespace Elysium.Items
         public virtual void Empty()
         {
             ResetItemStacks();
-            TriggerOnValueChanged();
         }        
 
         protected abstract void ResetItemStacks();
@@ -126,7 +123,7 @@ namespace Elysium.Items
 
         protected virtual void BindStacks(IItemStack _stack)
         {
-            _stack.OnSwap += TriggerOnValueChanged;
+            _stack.OnValueChanged += TriggerOnValueChanged;
         }
 
         protected virtual void BindStacks(IEnumerable<IItemStack> _stacks)
@@ -139,7 +136,7 @@ namespace Elysium.Items
 
         protected virtual void DisposeStacks(IItemStack _stack)
         {
-            _stack.OnSwap -= TriggerOnValueChanged;
+            _stack.OnValueChanged -= TriggerOnValueChanged;
         }
 
         protected virtual void DisposeStacks(IEnumerable<IItemStack> _stacks)

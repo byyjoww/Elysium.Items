@@ -16,7 +16,7 @@ namespace Elysium.Items.UI
         public virtual void Raise(IItemStack _stack, int _quantity)
         {
             OnRaise?.Invoke(_stack, _quantity);
-            _stack.Use(user, _quantity);
+            bool success = _stack.Use(user, _quantity);
         }
     }
 }
