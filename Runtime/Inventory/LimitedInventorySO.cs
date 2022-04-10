@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "LimitedInventorySO_", menuName = "Scriptable Objects/Inventory/Limited Inventory")]
+    [CreateAssetMenu(fileName = "LimitedInventorySO_", menuName = "Scriptable Objects/Items/Inventory/Limited")]
     public class LimitedInventorySO : InventorySO, IExpandable
     {
         [SerializeField] private Capacity capacity = new Capacity();

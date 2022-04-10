@@ -20,7 +20,6 @@ namespace Elysium.Items.UI
         [Header("Button")]
         [SerializeField] protected Button useItemButton = default;
 
-        protected IInventory inventory = default;
         protected IItemStack stack = default;
         protected IUseItemEvent useItemEvent = default;
         protected IDraggable draggable = default;
@@ -45,11 +44,12 @@ namespace Elysium.Items.UI
             draggable.CanDrag = false;
             droppable.CanDrop = false;
 
-            droppable.OnReceiveDrop += RequestStackSwap;            
+            droppable.OnReceiveDrop += RequestStackSwap;
 
             pointerResolver.OnClick += OnClick;
             pointerResolver.OnHoldStart += OnHoldStart;
             pointerResolver.OnHoldEnd += OnHoldEnd;
+            draggable.OnDragBegin += pointerResolver.OnHoldOverride;
 
             hoverResolver.OnHoverStart += OnHoverStart;
             hoverResolver.OnHoverEnd += OnHoverEnd;
@@ -61,7 +61,6 @@ namespace Elysium.Items.UI
         public virtual void Setup(VisualInventorySlotConfig _config)
         {
             enabled = true;
-            this.inventory = _config.Inventory;
             this.stack = _config.Stack;
             this.useItemEvent = _config.Event;
 
@@ -74,7 +73,7 @@ namespace Elysium.Items.UI
 
         public void Swap(IItemStack _stack)
         {
-            inventory.Swap(stack, _stack);
+            _stack.SwapContents(this.stack);
         }
 
         #region EVENTS
@@ -101,7 +100,7 @@ namespace Elysium.Items.UI
         protected virtual void OnClick()
         {
             // Debug.Log($"{gameObject.name} was clicked");
-            useItemEvent.Raise(inventory, stack);
+            useItemEvent.Raise(stack, 1);
         }
         #endregion
 
@@ -152,6 +151,7 @@ namespace Elysium.Items.UI
             pointerResolver.OnClick -= OnClick;
             pointerResolver.OnHoldStart -= OnHoldStart;
             pointerResolver.OnHoldEnd -= OnHoldEnd;
+            draggable.OnDragBegin -= pointerResolver.OnHoldOverride;
 
             hoverResolver.OnHoverStart -= OnHoverStart;
             hoverResolver.OnHoverEnd -= OnHoverEnd;

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Elysium.Items
 {
@@ -10,8 +11,8 @@ namespace Elysium.Items
         private const int MAX_VALUE = int.MaxValue;
 
         private Guid id = default;
-        private IItem item = default;
-        private int quantity = default;
+        private IItem item = null;
+        private int quantity = MIN_VALUE;
 
         public Guid ID => id;
         public IItem Item => item;
@@ -19,23 +20,24 @@ namespace Elysium.Items
         public bool IsFull => item != null && quantity >= Item.MaxStack;
         public bool IsEmpty => item == null;
 
+        public event UnityAction OnSwap = delegate { };
+        public event UnityAction OnValueChanged = delegate { };
+
         public ItemStack(Guid _stackID)
         {
             id = _stackID;
-            Set(null, MIN_VALUE);
         }
 
         public static ItemStack New()
         {
-            var stack = new ItemStack(Guid.NewGuid());
-            stack.Set(null, MIN_VALUE);
-            return stack;
+            return new ItemStack(Guid.NewGuid());
         }
 
         public static ItemStack WithContents(IItem _item, int _amount)
         {
             var stack = new ItemStack(Guid.NewGuid());
-            stack.Set(_item, _amount);
+            stack.SetInternal(_item);
+            stack.SetInternal(_amount);
             return stack;
         }
 
@@ -51,16 +53,33 @@ namespace Elysium.Items
 
         public void Set(IItem _item, int _value)
         {
-            Set(_item);
-            Set(_value);
+            var prevItem = item;
+            var prevQty = quantity;
+            SetInternal(_item);
+            SetInternal(_value);
+            if (prevItem != item || prevQty != quantity) { OnValueChanged?.Invoke(); }
         }
 
         public void Set(IItem _item)
+        {
+            var prev = item;
+            SetInternal(_item);
+            if (prev != item) { OnValueChanged?.Invoke(); }
+        }
+
+        private void SetInternal(IItem _item)
         {
             item = _item;
         }
 
         public void Set(int _value)
+        {
+            var prev = quantity;
+            SetInternal(_value);
+            if (prev != quantity) { OnValueChanged?.Invoke(); }
+        }
+
+        private void SetInternal(int _value)
         {
             quantity = Mathf.Clamp(_value, MIN_VALUE, MAX_VALUE);
             if (quantity <= 0) { Empty(); }
@@ -68,13 +87,34 @@ namespace Elysium.Items
 
         public void Empty()
         {
-            quantity = 0;
+            quantity = MIN_VALUE;
             item = null;
+        }
+
+        public void Use(IItemUser _user, int _numOfTimes = 1)
+        {
+            if (quantity < _numOfTimes) { return; }
+            for (int i = 0; i < _numOfTimes; i++)
+            {
+                item.Use(_user);
+            }
+        }
+
+        public void SwapContents(IItemStack _target)
+        {
+            IItem otherItem = _target.Item;
+            int otherQuantity = _target.Quantity;
+
+            _target.Set(this.item, this.quantity);
+            Set(otherItem, otherQuantity);
+            OnSwap?.Invoke();
+
+            Debug.Log($"swapped stacks for {Item?.Name} and {_target.Item?.Name}");
         }
 
         public new string ToString()
         {
             return $"x{quantity} {item.Name}";
-        }
+        }        
     }
 }

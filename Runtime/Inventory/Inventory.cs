@@ -1,5 +1,6 @@
 using Elysium.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,15 +43,20 @@ namespace Elysium.Items
             Items.Empty();
         }
 
-        public void Swap(IItemStack _origin, IItemStack _destination)
-        {
-            Items.Swap(_origin, _destination);
-        }
-
         protected void TriggerOnValueChanged()
         {
             OnValueChanged?.Invoke();
-        }        
+        }
+
+        public IEnumerator<IItemStack> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         ~Inventory()
         {

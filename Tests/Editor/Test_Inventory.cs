@@ -209,7 +209,7 @@ namespace Elysium.Items.Tests
                 Assert.AreEqual(item2, stack2.Item);
                 Assert.AreEqual(1, stack2.Quantity);
 
-                inventory.Swap(stack1, stack2);
+                stack1.SwapContents(stack2);
 
                 IItemStack newStack1 = inventory.Items.Stacks.ElementAt(0);
                 Assert.AreEqual(item2, newStack1.Item);
@@ -218,7 +218,7 @@ namespace Elysium.Items.Tests
                 IItemStack newStack2 = inventory.Items.Stacks.ElementAt(1);
                 Assert.AreEqual(item1, newStack2.Item);
                 Assert.AreEqual(1, newStack2.Quantity);
-            }            
+            }
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace Elysium.Items.Tests
 
                 IItemStack stack1 = inventory.Items.Stacks.ElementAt(0);
                 IItemStack stack2 = inventory.Items.Stacks.ElementAt(1);
-                inventory.Swap(stack1, stack2);
+                stack1.SwapContents(stack2);
                 Assert.AreEqual(4, onValueChangedTriggers);
 
                 inventory.Empty();

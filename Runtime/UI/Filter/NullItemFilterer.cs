@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace Elysium.Items.UI
 {
-    public class NullInventoryFilterer : IInventoryFilterer
+    public class NullItemFilterer : IItemFilterer
     {
         public event UnityAction OnValueChanged = delegate { };
 

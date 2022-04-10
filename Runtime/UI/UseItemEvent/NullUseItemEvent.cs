@@ -4,9 +4,9 @@ namespace Elysium.Items.UI
 {
     public class NullUseItemEvent : IUseItemEvent
     {
-        public event UnityAction<IInventory, IItemStack> OnRaise = delegate { };
+        public event UnityAction<IItemStack, int> OnRaise = delegate { };
 
-        public void Raise(IInventory _inventory, IItemStack _stack)
+        public void Raise(IItemStack _stack, int _quantity)
         {
             
         }

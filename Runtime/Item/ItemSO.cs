@@ -5,10 +5,11 @@ using static System.Text.Encoding;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "ItemSO_", menuName = "Scriptable Objects/Inventory/Item")]
+    [CreateAssetMenu(fileName = "ItemSO_", menuName = "Scriptable Objects/Items/Item")]
     public class ItemSO : ScriptableObject, IItem
     {
         [SerializeField] private string itemName = default;
+        [SerializeField] private string description = default;
         [SerializeField] private Sprite icon = default;
         [SerializeField] private int maxStack = 1;
         [SerializeField] private bool usable = false;
@@ -16,8 +17,14 @@ namespace Elysium.Items
         public Guid ItemID => Guid.NewGuid();
         public Guid InstanceID => Guid.NewGuid();
         public string Name => itemName;
+        public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
-        public bool IsUsable => usable;        
+        public bool IsUsable => usable;
+
+        public virtual void Use(IItemUser _user)
+        {
+            
+        }
     }
 }

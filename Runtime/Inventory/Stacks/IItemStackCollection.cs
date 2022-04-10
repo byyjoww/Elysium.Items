@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using UnityEngine.Events;
 
 namespace Elysium.Items
 {
-    public interface IItemStackCollection
+    public interface IItemStackCollection : IEnumerable<IItemStack>
     {
         IEnumerable<IItemStack> Stacks { get; }
 
@@ -15,6 +16,5 @@ namespace Elysium.Items
         bool Contains(IItem _item);
         int Quantity(IItem _item);
         void Empty();
-        void Swap(IItemStack _origin, IItemStack _destination);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Elysium.Items.UI
 {
-    public class NullInventoryTooltip : IInventoryTooltip
+    public class NullInventoryTooltip : ItemTooltip
     {
         public ITooltip Tooltip => null;
         public bool Show => false;

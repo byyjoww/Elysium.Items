@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.Events;
 
 namespace Elysium.Items
 {
@@ -10,12 +11,17 @@ namespace Elysium.Items
         IItem Item { get; }
         int Quantity { get; }
 
+        event UnityAction OnSwap;
+        event UnityAction OnValueChanged;
+
         void Add(int _quantity);
         void Empty();
         void Remove(int _quantity);
         void Set(IItem _item);
         void Set(IItem _item, int _value);
         void Set(int _value);
-        string ToString();
+        void SwapContents(IItemStack _target);
+        void Use(IItemUser _user, int _numOfTimes = 1);
+        string ToString();        
     }
 }

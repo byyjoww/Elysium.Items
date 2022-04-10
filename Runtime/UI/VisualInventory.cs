@@ -7,20 +7,18 @@ namespace Elysium.Items.UI
     public class VisualInventory : IVisualInventory
     {
         protected VisualInventoryConfig config = default;
-        protected IInventoryTooltip tooltip = default;
-        protected IInventoryFilterer filter = default;
+        protected IItemFilterer filter = default;
         protected IInventorySlotView view = default;
         protected GameObject inventoryPanel = default;
 
-        protected IInventory inventory = default;
-        protected IUseItemEvent useItemEvent = default;
+        protected IInventory inventory = new NullInventory();
+        protected IUseItemEvent useItemEvent = new NullUseItemEvent();
 
         protected virtual int NumOfSlots => config.MinNumOfSlotsByCapacity ? inventory.Items.Stacks.Count() : Mathf.Max(config.MinNumberOfSlots, inventory.Items.Stacks.Count());
 
-        public VisualInventory(VisualInventoryConfig _config, IInventoryTooltip _tooltip, IInventoryFilterer _filter, IInventorySlotView _view, GameObject _inventoryPanel)
+        public VisualInventory(VisualInventoryConfig _config, IItemFilterer _filter, IInventorySlotView _view, GameObject _inventoryPanel)
         {
             this.config = _config;
-            this.tooltip = _tooltip;
             this.filter = _filter;
             this.view = _view;
             this.inventoryPanel = _inventoryPanel;
@@ -38,6 +36,7 @@ namespace Elysium.Items.UI
         public virtual void Close()
         {
             Deregister();
+            view.Set(0);
             inventoryPanel.SetActive(false);
         }
 
@@ -46,7 +45,6 @@ namespace Elysium.Items.UI
             filter.Init(_config);
             filter.OnValueChanged += Spawn;
             inventory.OnValueChanged += Spawn;
-            tooltip.OnValueChanged += Spawn;
         }
 
         protected virtual void Deregister()
@@ -54,7 +52,6 @@ namespace Elysium.Items.UI
             filter.End();
             filter.OnValueChanged -= Spawn;
             inventory.OnValueChanged -= Spawn;
-            tooltip.OnValueChanged -= Spawn;
         }
 
         protected void Spawn()
@@ -74,7 +71,6 @@ namespace Elysium.Items.UI
         {
             _slot.Setup(new VisualInventorySlotConfig
             {
-                Inventory = inventory,
                 Stack = _stack,
                 Event = _stack.Item.IsUsable ? useItemEvent : new NullUseItemEvent(),
             });

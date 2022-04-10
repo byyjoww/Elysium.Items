@@ -1,5 +1,7 @@
 using Elysium.Core;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -45,9 +47,14 @@ namespace Elysium.Items
             Items.Empty();
         }
 
-        public void Swap(IItemStack _origin, IItemStack _destination)
+        public IEnumerator<IItemStack> GetEnumerator()
         {
-            Items.Swap(_origin, _destination);
+            return Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         protected void TriggerOnValueChanged()
@@ -79,6 +86,6 @@ namespace Elysium.Items
         }
 
         public abstract void Load(ILoader _loader);
-        public abstract void Save(ISaver _saver);
+        public abstract void Save(ISaver _saver);        
     }
 }

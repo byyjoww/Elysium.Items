@@ -26,7 +26,8 @@ namespace Elysium.Items
             Capacity = new IntValueRange(_currentCapacity, _capacity.Min, _capacity.Max, _capacity.Default);
             Capacity.OnChanged += TriggerOnValueChanged;
             stacks = _stacks.ToArray();
-            ResizeAndInitializeStacks(Capacity.Value);
+            BindStacks(stacks);
+            ResizeAndInitializeStacks(Capacity.Value);            
         }
 
         public bool Expand(int _quantity)
@@ -49,10 +50,11 @@ namespace Elysium.Items
 
         protected override void ResetItemStacks()
         {
-            stacks = new ItemStack[Capacity.Value];
+            DisposeStacks(stacks);
+            stacks = new IItemStack[Capacity.Value];
             for (int i = 0; i < stacks.Length; i++)
             {
-                stacks[i] = ItemStack.New();
+                stacks[i] = CreateStack();
             }
         }
 
@@ -95,19 +97,20 @@ namespace Elysium.Items
             if (excess <= 0) { return new List<IItemStack>(); }
             var items = new List<IItemStack>();
             for (int i = 0; i < excess; i++)
-            {                
+            {
                 IItemStack stack = stacks.Last();
+                DisposeStacks(stack);
                 items.Add(ItemStack.WithContents(stack.Item, stack.Quantity));
-            }            
+            }
             return items;
         }
 
         private void ResizeAndInitializeStacks(int _size)
-        {
+        {            
             Array.Resize(ref stacks, _size);
             for (int i = 0; i < stacks.Length; i++)
             {
-                if (stacks[i] == null) { stacks[i] = ItemStack.New(); }
+                if (stacks[i] == null) { stacks[i] = CreateStack(); }
             }
         }
     }

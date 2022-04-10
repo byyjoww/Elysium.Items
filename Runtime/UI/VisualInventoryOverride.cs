@@ -4,7 +4,7 @@ namespace Elysium.Items.UI
 {
     public class VisualInventoryOverride : VisualInventory
     {
-        public VisualInventoryOverride(VisualInventoryConfig _config, IInventoryTooltip _tooltip, IInventoryFilterer _filter, IInventorySlotView _view, GameObject _inventoryPanel) : base(_config, _tooltip, _filter, _view, _inventoryPanel)
+        public VisualInventoryOverride(VisualInventoryConfig _config, IItemFilterer _filter, IInventorySlotView _view, GameObject _inventoryPanel) : base(_config, _filter, _view, _inventoryPanel)
         {
 
         }
@@ -13,7 +13,6 @@ namespace Elysium.Items.UI
         {
             _slot.Setup(new VisualInventorySlotConfig
             {
-                Inventory = inventory,
                 Stack = _stack,
                 Event = useItemEvent,
             });

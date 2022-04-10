@@ -1,5 +1,8 @@
 ﻿using Elysium.Core;
 using UnityEngine;
+using System.Linq;
+using Elysium.Core.Attributes;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -7,13 +10,16 @@ using UnityEditor;
 namespace Elysium.Items.UI
 {
     [CreateAssetMenu(fileName = "UseItemEventSO", menuName = "Scriptable Objects/Events/Use Item", order = 1)]
-    public class UseItemEventSO : GenericEventSO<IInventory, IItemStack>, IUseItemEvent
+    public class UseItemEventSO : GenericEventSO<IItemStack, int>, IUseItemEvent
     {
 #if UNITY_EDITOR
-
         [Header("Editor Only")]
-        [SerializeField] private IInventory editorData1;
-        [SerializeField] private IItemStack editorData2;
+        [RequireInterface(typeof(IInventory))]
+        [SerializeField] private UnityEngine.Object inventory;
+        [SerializeField] private string itemID;
+        [SerializeField] private int quantity;
+
+        private IInventory Inventory => inventory as IInventory;
 
         [CustomEditor(typeof(UseItemEventSO), true)]
         public class UseItemEventSOEditor : Editor
@@ -25,7 +31,7 @@ namespace Elysium.Items.UI
                 if (GUILayout.Button("Raise"))
                 {
                     var e = target as UseItemEventSO;
-                    e.Raise(e.editorData1, e.editorData2);
+                    e.Raise(e.Inventory.FirstOrDefault(x => x.Item.ItemID == Guid.Parse(e.itemID)), e.quantity);
                 }
             }
         }

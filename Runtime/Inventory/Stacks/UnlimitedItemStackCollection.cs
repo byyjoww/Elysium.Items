@@ -14,10 +14,12 @@ namespace Elysium.Items
         public UnlimitedItemStackCollection(IEnumerable<IItemStack> _stacks)
         {
             stacks = _stacks.ToList();
+            BindStacks(stacks);
         }
 
         protected override void ResetItemStacks()
         {
+            DisposeStacks(stacks);
             stacks = new List<IItemStack>();
         }
 
@@ -32,7 +34,7 @@ namespace Elysium.Items
             for (int i = 0; i < numOfNewStacks; i++)
             {
                 if (_remaining <= 0) { break; }
-                ItemStack stack = ItemStack.New();
+                IItemStack stack = CreateStack();
                 _remaining = AddToStack(_item, _remaining, stack);
                 stack.Set(_item);
                 stacks.Add(stack);
@@ -45,7 +47,11 @@ namespace Elysium.Items
         {
             int qtyToRemove = Mathf.Min(_remaining, _stack.Quantity);
             _stack.Remove(qtyToRemove);
-            if (_stack.IsEmpty && _stack is ItemStack) { stacks.Remove(_stack as ItemStack); }
+            if (_stack.IsEmpty) 
+            {
+                DisposeStacks(_stack);
+                stacks.Remove(_stack);
+            }
             _remaining -= qtyToRemove;
             return _remaining;
         }

@@ -11,6 +11,7 @@ namespace Elysium.Items
         public Guid ItemID => Guid.Empty;
         public Guid InstanceID => Guid.Empty;
         public string Name => "null";
+        public string Description => "";
         public Sprite Icon => icon;
         public int MaxStack => 0;
         public bool IsUsable => false;
@@ -18,6 +19,11 @@ namespace Elysium.Items
         public NullItem()
         {
             icon = Resources.Load<Sprite>("empty");
+        }
+
+        public void Use(IItemUser _user)
+        {
+            
         }
     }
 }

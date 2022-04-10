@@ -9,14 +9,16 @@ namespace Elysium.Items
     {
         private Guid itemID = default;
         private Guid instanceID = default;
-        private string itemName = default;
+        private string name = "generic";
+        private string description = default;
         private Sprite icon = default;
         private int maxStack = 1;
         private bool usable = false;        
 
         public Guid ItemID => itemID;
         public Guid InstanceID => instanceID;
-        public string Name => itemName;
+        public string Name => name;
+        public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
         public bool IsUsable => usable;
@@ -31,6 +33,11 @@ namespace Elysium.Items
         {
             this.itemID = Guid.Parse(_itemID);
             this.instanceID = Guid.Parse(_instanceID);
+        }
+
+        public virtual void Use(IItemUser _user)
+        {
+            
         }
 
         public override bool Equals(System.Object _item)

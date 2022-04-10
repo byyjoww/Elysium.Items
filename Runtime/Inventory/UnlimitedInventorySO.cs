@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Elysium.Items
 {
-    [CreateAssetMenu(fileName = "UnlimitedInventorySO_", menuName = "Scriptable Objects/Inventory/Unlimited Inventory")]
+    [CreateAssetMenu(fileName = "UnlimitedInventorySO_", menuName = "Scriptable Objects/Items/Inventory/Unlimited")]
     public class UnlimitedInventorySO : InventorySO
     {
         protected UnlimitedItemStackCollection items = default;

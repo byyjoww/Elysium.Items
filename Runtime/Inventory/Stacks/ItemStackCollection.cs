@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -53,18 +54,7 @@ namespace Elysium.Items
         {
             ResetItemStacks();
             TriggerOnValueChanged();
-        }
-
-        public void Swap(IItemStack _origin, IItemStack _destination)
-        {
-            IItem item = _destination.Item;
-            int quantity = _destination.Quantity;
-
-            _destination.Set(_origin.Item, _origin.Quantity);
-            _origin.Set(item, quantity);
-            TriggerOnValueChanged();
-            Debug.Log($"swapped stacks for {_origin.Item?.Name} and {_destination.Item?.Name}");
-        }
+        }        
 
         protected abstract void ResetItemStacks();
 
@@ -117,9 +107,57 @@ namespace Elysium.Items
             return Stacks.Where(x => x.Item == _item);
         }
 
+        public IEnumerator<IItemStack> GetEnumerator()
+        {
+            return Stacks.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        protected virtual IItemStack CreateStack()
+        {
+            var stack = ItemStack.New();
+            BindStacks(stack);
+            return stack;
+        }
+
+        protected virtual void BindStacks(IItemStack _stack)
+        {
+            _stack.OnSwap += TriggerOnValueChanged;
+        }
+
+        protected virtual void BindStacks(IEnumerable<IItemStack> _stacks)
+        {
+            foreach (var s in _stacks)
+            {
+                BindStacks(s);
+            }
+        }
+
+        protected virtual void DisposeStacks(IItemStack _stack)
+        {
+            _stack.OnSwap -= TriggerOnValueChanged;
+        }
+
+        protected virtual void DisposeStacks(IEnumerable<IItemStack> _stacks)
+        {
+            foreach (var s in _stacks)
+            {
+                DisposeStacks(s);
+            }
+        }
+
         protected void TriggerOnValueChanged()
         {
             OnValueChanged?.Invoke();
+        }
+
+        ~ItemStackCollection()
+        {
+            DisposeStacks(Stacks);
         }
     }
 }
