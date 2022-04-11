@@ -15,10 +15,10 @@ namespace Elysium.Items
         private int quantity = MIN_VALUE;
 
         public Guid ID => id;
-        public IItem Item => item;
+        public IItem Item => !IsEmpty ? item : new NullItem();
         public int Quantity => quantity;
         public bool IsFull => item != null && quantity >= Item.MaxStack;
-        public bool IsEmpty => item == null;
+        public bool IsEmpty => item is null;
 
         public event UnityAction OnValueChanged = delegate { };
         public event UnityAction OnFull = delegate { };
@@ -37,8 +37,8 @@ namespace Elysium.Items
         public static ItemStack WithContents(IItem _item, int _amount)
         {
             var stack = new ItemStack(Guid.NewGuid());
-            stack.SetInternal(_item);
-            stack.SetInternal(_amount);
+            stack.item = _item;
+            stack.quantity = Mathf.Clamp(_amount, MIN_VALUE, MAX_VALUE);
             return stack;
         }
 
@@ -54,18 +54,32 @@ namespace Elysium.Items
 
         public void Set(IItem _item, int _value)
         {
-            var prevItem = item;
-            var prevQty = quantity;
+            var prev = (item, quantity);
             SetInternal(_item);
             SetInternal(_value);
-            if (prevItem != item || prevQty != quantity) { OnValueChanged?.Invoke(); }
+            HandleEvents(prev);
         }
 
         public void Set(IItem _item)
         {
-            var prev = item;
+            var prev = (item, quantity);
             SetInternal(_item);
-            if (prev != item) { OnValueChanged?.Invoke(); }
+            HandleEvents(prev);
+        }        
+
+        public void Set(int _value)
+        {
+            var prev = (item, quantity);
+            SetInternal(_value);
+            HandleEvents(prev);
+        }
+
+        public void Empty()
+        {
+            var prev = (item, quantity);
+            SetInternal(null);
+            SetInternal(MIN_VALUE);
+            HandleEvents(prev);
         }
 
         private void SetInternal(IItem _item)
@@ -73,26 +87,15 @@ namespace Elysium.Items
             item = _item;
         }
 
-        public void Set(int _value)
-        {
-            var prev = quantity;
-            SetInternal(_value);
-            if (prev != quantity) { OnValueChanged?.Invoke(); }            
-        }
-
         private void SetInternal(int _value)
         {
             quantity = Mathf.Clamp(_value, MIN_VALUE, MAX_VALUE);
-            if (quantity <= 0) { Empty(); }
-            if (IsFull) { OnFull?.Invoke(); }
-        }
-
-        public void Empty()
-        {
-            quantity = MIN_VALUE;
-            item = null;
-            OnEmpty?.Invoke();
-        }
+            if (quantity <= 0) 
+            {
+                item = null;
+                quantity = 0;
+            }            
+        }        
 
         public bool Use(IItemUser _user, int _numOfItemsToUse = 1)
         {
@@ -117,7 +120,14 @@ namespace Elysium.Items
 
         public new string ToString()
         {
-            return $"x{quantity} {item.Name}";
-        }        
+            return !IsEmpty ? $"x{quantity} {item.Name}" : "{empty}";
+        }       
+        
+        private void HandleEvents((IItem, int) _prev)
+        {
+            if (_prev.Item1 != item || _prev.Item2 != quantity) { OnValueChanged?.Invoke(); }
+            if (IsFull) { OnFull?.Invoke(); }
+            if (IsEmpty) { OnEmpty?.Invoke(); }
+        }
     }
 }

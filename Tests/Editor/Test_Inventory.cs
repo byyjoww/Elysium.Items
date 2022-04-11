@@ -238,30 +238,29 @@ namespace Elysium.Items.Tests
 
             foreach (var inventory in inventories)
             {
-                int onValueChangedTriggers = 0;
-                void TriggerOnValueChanged() => onValueChangedTriggers++;
-                inventory.OnValueChanged += TriggerOnValueChanged;
-
                 var actions = new Action[]
                 {
                     delegate { inventory.Add(item1, 1); },
                     delegate { inventory.Remove(item1, 1); },
                     delegate { inventory.Add(item1, 1); },
-                    delegate { inventory.Add(item2, 1); },                    
+                    delegate { inventory.Add(item2, 1); },
                     delegate {
                         IItemStack stack1 = inventory.Items.Stacks.ElementAt(0);
                         IItemStack stack2 = inventory.Items.Stacks.ElementAt(1);
-                        stack1.SwapContents(stack2);                      
+                        stack1.SwapContents(stack2);
                     },
-                     delegate { inventory.Empty(); },
+                      delegate { inventory.Empty(); },
                 };
+
+                int onValueChangedTriggers = 0;
+                void TriggerOnValueChanged() => onValueChangedTriggers++;
+                inventory.OnValueChanged += TriggerOnValueChanged;
 
                 foreach (var action in actions)
                 {
-                    Debug.Log($"running action {action}");
-                    int prev = onValueChangedTriggers;
+                    onValueChangedTriggers = 0;
                     action?.Invoke();
-                    Assert.Greater(onValueChangedTriggers, prev);
+                    Assert.Greater(onValueChangedTriggers, 0);                    
                 }
 
                 inventory.OnValueChanged -= TriggerOnValueChanged;

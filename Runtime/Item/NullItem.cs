@@ -25,5 +25,17 @@ namespace Elysium.Items
         {
             
         }
+
+        public override bool Equals(System.Object _item)
+        {
+            NullItem item = _item as NullItem;
+            if (item == null) { return false; }
+            return item.ItemID == ItemID && item.InstanceID == InstanceID;
+        }
+
+        public override int GetHashCode()
+        {
+            return InstanceID.GetHashCode();
+        }
     }
 }

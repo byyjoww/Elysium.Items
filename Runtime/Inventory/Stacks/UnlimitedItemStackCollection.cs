@@ -36,9 +36,8 @@ namespace Elysium.Items
             for (int i = 0; i < numOfNewStacks; i++)
             {
                 if (_remaining <= 0) { break; }
-                IItemStack stack = CreateStack();
+                IItemStack stack = CreateStackWithContents(_item, 0);
                 _remaining = AddToStack(_item, _remaining, stack);
-                stack.Set(_item);
                 stacks.Add(stack);
             }
 

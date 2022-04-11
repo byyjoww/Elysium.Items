@@ -121,6 +121,13 @@ namespace Elysium.Items
             return stack;
         }
 
+        protected virtual IItemStack CreateStackWithContents(IItem _item, int _quantity)
+        {
+            var stack = ItemStack.WithContents(_item, _quantity);
+            BindStacks(stack);
+            return stack;
+        }
+
         protected virtual void BindStacks(IItemStack _stack)
         {
             _stack.OnValueChanged += TriggerOnValueChanged;
