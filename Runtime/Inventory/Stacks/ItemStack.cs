@@ -109,6 +109,8 @@ namespace Elysium.Items
 
         public void SwapContents(IItemStack _target)
         {
+            if (_target is NullItemStack) { return; }
+
             IItem otherItem = _target.Item;
             int otherQuantity = _target.Quantity;
 

@@ -29,12 +29,12 @@ namespace Elysium.Items
             return new LimitedInventory(new List<IItemStack>(), _capacity, _currentCapacity);
         }
 
-        public static LimitedInventory New(IEnumerable<IItemStack> _stacks, Capacity _capacity)
+        public static LimitedInventory New(Capacity _capacity, IEnumerable<IItemStack> _stacks)
         {
             return new LimitedInventory(_stacks, _capacity, _capacity.Default);
         }
 
-        public static LimitedInventory New(IEnumerable<IItemStack> _stacks, Capacity _capacity, int _currentCapacity)
+        public static LimitedInventory New(Capacity _capacity, int _currentCapacity, IEnumerable<IItemStack> _stacks)
         {
             return new LimitedInventory(_stacks, _capacity, _currentCapacity);
         }

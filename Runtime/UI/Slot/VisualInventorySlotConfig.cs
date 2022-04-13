@@ -4,5 +4,6 @@
     {
         public IItemStack Stack { get; set; }
         public IUseItemEvent Event { get; set; }
+        public bool CanSwap { get; set; }
     }
 }

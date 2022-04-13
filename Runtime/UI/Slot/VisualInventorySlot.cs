@@ -17,8 +17,7 @@ namespace Elysium.Items.UI
         [SerializeField] protected TMP_Text stackAmountText = default;
         [SerializeField] protected GameObject stackAmountBackground = default;
 
-        [Header("Button")]
-        [SerializeField] protected Button useItemButton = default;
+        private Sprite defaultSprite = default;
 
         protected IItemStack stack = default;
         protected IUseItemEvent useItemEvent = default;
@@ -55,6 +54,7 @@ namespace Elysium.Items.UI
             hoverResolver.OnHoverEnd += OnHoverEnd;
             Draggable.OnAnyDragBegin += hoverResolver.OnPointerExit;
 
+            defaultSprite = icon.sprite;
             enabled = false;
         }
 
@@ -64,15 +64,16 @@ namespace Elysium.Items.UI
             this.stack = _config.Stack;
             this.useItemEvent = _config.Event;
 
-            gameObject.name = stack.Item.Name;
-            draggable.CanDrag = !_config.Stack.IsEmpty;
-            droppable.CanDrop = true;
+            gameObject.name = $"[{stack.GetType().Name}] {stack.ToString()}";
+            draggable.CanDrag = _config.CanSwap && !_config.Stack.IsEmpty;
+            droppable.CanDrop = _config.CanSwap;
             SetupQuantity(stack.Quantity);
             SetupIcon(stack.Item.Icon);
         }
 
         public void Swap(IItemStack _stack)
         {
+            Debug.Log("requesting stack swap");
             _stack.SwapContents(this.stack);
         }
 
@@ -106,7 +107,7 @@ namespace Elysium.Items.UI
 
         protected virtual void SetupIcon(Sprite _icon)
         {
-            icon.sprite = _icon;
+            icon.sprite = _icon != null ? _icon : defaultSprite;
         }
 
         protected virtual void SetupQuantity(int _count)
@@ -116,9 +117,9 @@ namespace Elysium.Items.UI
         }
 
         private void RequestStackSwap(IDraggable _draggable)
-        {
+        {            
             if (_draggable.gameObject.TryGetComponent(out IVisualInventorySlot slot))
-            {
+            {                
                 slot.Swap(stack);
             }
         }
@@ -156,6 +157,6 @@ namespace Elysium.Items.UI
             hoverResolver.OnHoverStart -= OnHoverStart;
             hoverResolver.OnHoverEnd -= OnHoverEnd;
             Draggable.OnAnyDragBegin -= hoverResolver.OnPointerExit;
-        }        
+        }
     }    
 }

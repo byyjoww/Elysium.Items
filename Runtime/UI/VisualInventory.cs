@@ -5,14 +5,14 @@ using UnityEngine;
 namespace Elysium.Items.UI
 {
     public class VisualInventory : IVisualInventory
-    {
+    {        
         protected VisualInventoryConfig config = default;
         protected IItemFilterer filter = default;
         protected IInventorySlotView view = default;
         protected GameObject inventoryPanel = default;
-
         protected IInventory inventory = new NullInventory();
         protected IUseItemEvent useItemEvent = new NullUseItemEvent();
+        protected bool open = false;
 
         protected virtual int NumOfSlots => config.MinNumOfSlotsByCapacity ? inventory.Items.Stacks.Count() : Mathf.Max(config.MinNumberOfSlots, inventory.Items.Stacks.Count());
 
@@ -26,18 +26,22 @@ namespace Elysium.Items.UI
 
         public void Open(IInventory _inventory, IItemFilterConfig _config, IUseItemEvent _event)
         {
+            if (open) { return; }
             this.useItemEvent = _event;
             this.inventory = _inventory;
             inventoryPanel.SetActive(true);
             Register(_config);
             Spawn();
+            open = true;
         }
 
         public virtual void Close()
         {
+            if (!open) { return; }
             Deregister();
             view.Set(0);
             inventoryPanel.SetActive(false);
+            open = false;
         }
 
         protected virtual void Register(IItemFilterConfig _config)
@@ -73,13 +77,14 @@ namespace Elysium.Items.UI
             {
                 Stack = _stack,
                 Event = _stack.Item.IsUsable ? useItemEvent : new NullUseItemEvent(),
+                CanSwap = config.EnableSwapping,
             });
         }
 
         protected virtual IItemStack GetStack(List<IItemStack> _stacks, int _index)
         {
             IItemStack itemFromStack = _stacks.Count <= _index ? new NullItemStack() : _stacks[_index];
-            if (Invisible(itemFromStack)) { return itemFromStack; }
+            if (Invisible(itemFromStack)) { return new NullItemStack(); }
             return itemFromStack;
         }
 
@@ -91,7 +96,7 @@ namespace Elysium.Items.UI
 
         protected virtual bool Invisible(IItemStack _stack)
         {
-            return _stack.IsEmpty || !filter.Evaluate(_stack.Item);
+            return (config.HideEmptySlots && _stack.IsEmpty) || !filter.Evaluate(_stack.Item);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Elysium.Items.UI
         protected override void OnClick()
         {
             UnityAction openTooltip = delegate { Tooltip.Open(stack.Item, base.OnClick); };
-            UnityAction onClick = show.Value ? openTooltip : base.OnClick;
+            UnityAction onClick = show.Value && !stack.IsEmpty ? openTooltip : base.OnClick;
             onClick?.Invoke();
         }
     }

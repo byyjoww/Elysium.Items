@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77ab401f5c4b3f645b99b159a11fa0f1, type: 3}
-  m_Name: InventoryFilterConfigSO
+  m_Name: ItemFilterConfigSO
   m_EditorClassIdentifier: 
   Nodes: []
   visible: 1

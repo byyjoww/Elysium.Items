@@ -15,6 +15,7 @@ namespace Elysium.Items.UI
             {
                 Stack = _stack,
                 Event = useItemEvent,
+                CanSwap = false,
             });
         }
     }

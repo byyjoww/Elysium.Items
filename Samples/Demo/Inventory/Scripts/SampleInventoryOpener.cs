@@ -14,7 +14,8 @@ namespace Elysium.Items.Samples
         [SerializeField] private ItemFilterConfigSO filterConfig = default;
         [SerializeField] private VisualInventorySlotPoolView view = default;
         [SerializeField] private VisualInventorySlotPoolView overrideView = default;
-        [SerializeField] private VisualInventoryConfig inventoryConfig = default;        
+        [SerializeField] private VisualInventoryConfig inventoryConfig = default;
+        [SerializeField] private TMPDropdownItemFilterer inventoryFilterer = default;
 
         private IInventory inventory = default;
         private IVisualInventory visualInventory = default;
@@ -33,7 +34,7 @@ namespace Elysium.Items.Samples
                 new SampleConsumableItem("item6", "t_item6", 1),
             };
 
-            inventory = UnlimitedInventory.New(new IItemStack[]
+            inventory = LimitedInventory.New(new Capacity { Default = 21 }, new IItemStack[]
             {
                 ItemStack.WithContents(items.ElementAt(0), 1),
                 ItemStack.WithContents(items.ElementAt(1), 3),
@@ -43,8 +44,8 @@ namespace Elysium.Items.Samples
                 ItemStack.WithContents(items.ElementAt(5), 1),
             });
 
-            visualInventory = new VisualInventory(inventoryConfig, new NullItemFilterer(), view, inventoryPanel);
-            visualInventoryOverride = new VisualInventoryOverride(inventoryConfig, new NullItemFilterer(), overrideView, inventoryPanel);
+            visualInventory = new VisualInventory(inventoryConfig, inventoryFilterer, view, inventoryPanel);
+            visualInventoryOverride = new VisualInventoryOverride(inventoryConfig, new StaticDefaultItemFilterer(), overrideView, inventoryPanel);
 
             OpenInventory();
         }
