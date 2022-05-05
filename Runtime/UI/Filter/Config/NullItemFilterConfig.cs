@@ -13,7 +13,7 @@ namespace Elysium.Items.UI
 
         public bool Visible => throw new System.NotImplementedException();
 
-        public event UnityAction OnValueChanged;
+        public event UnityAction OnValueChanged = delegate { };
 
         public void Add(IItemFilter _filter, bool _acceptDuplicate = false)
         {

@@ -277,7 +277,7 @@ namespace Elysium.Items.Tests
             UnlimitedInventorySO[] unlimiteds = new UnlimitedInventorySO[]
             {                
                 UnlimitedInventorySO.New(),
-                // unltdInventoryAsset,
+                unltdInventoryAsset,
             };
 
             foreach (var inventory in unlimiteds)
@@ -294,25 +294,25 @@ namespace Elysium.Items.Tests
 
             LimitedInventorySO[] limiteds = new LimitedInventorySO[]
             {
-                LimitedInventorySO.New(new Capacity { Default = 20 }),
-                // ltdInventoryAsset,
+                LimitedInventorySO.New(new Capacity { Default = 10 }),
+                ltdInventoryAsset,
             };
 
             foreach (var inventory in limiteds)
             {
                 Assert.True(inventory.Add(item1, 1));
                 Assert.True(inventory.Expand(1));
-                Assert.AreEqual(21, inventory.Items.Stacks.Count());
+                Assert.AreEqual(11, inventory.Items.Stacks.Count());
                 inventory.Save(saveSystem);
 
                 inventory.Empty();
                 Assert.AreEqual(0, inventory.Quantity(item1));
                 inventory.Shrink(1, out _);
-                Assert.AreEqual(20, inventory.Items.Stacks.Count());
+                Assert.AreEqual(10, inventory.Items.Stacks.Count());
 
                 inventory.Load(saveSystem);
                 Assert.AreEqual(1, inventory.Quantity(item1));
-                Assert.AreEqual(21, inventory.Items.Stacks.Count());
+                Assert.AreEqual(11, inventory.Items.Stacks.Count());
             }     
         }        
 

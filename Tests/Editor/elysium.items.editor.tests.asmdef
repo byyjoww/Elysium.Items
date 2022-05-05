@@ -1,5 +1,5 @@
 {
-    "name": "elysium.editor.tests",
+    "name": "elysium.items.editor.tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
