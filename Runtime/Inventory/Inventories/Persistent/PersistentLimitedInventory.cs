@@ -10,10 +10,21 @@ namespace Elysium.Items
     {
         private Capacity capacity = default;
         private LimitedInventory inventory = default;
-
-        protected override IInventory Inventory => inventory;
+        
         public int AvailableExpansion => inventory.AvailableExpansion;
-        public int AvailableShrink => inventory.AvailableShrink;        
+        public int AvailableShrink => inventory.AvailableShrink;
+        protected override IInventory Inventory => LimitedInventory;
+        protected LimitedInventory LimitedInventory
+        {
+            get
+            {
+                if (inventory == null)
+                {
+                    CreateDefaultInventory();
+                }
+                return inventory;
+            }
+        }        
 
         public static PersistentLimitedInventory New(Guid _inventoryID, Capacity _capacity)
         {
@@ -27,12 +38,12 @@ namespace Elysium.Items
 
         public bool Expand(int _quantity)
         {
-            return inventory.Expand(_quantity);
+            return LimitedInventory.Expand(_quantity);
         }
 
         public bool Shrink(int _quantity, out IEnumerable<IItemStack> _excessItems)
         {
-            return inventory.Shrink(_quantity, out _excessItems);
+            return LimitedInventory.Shrink(_quantity, out _excessItems);
         }
 
         public override void Load(ILoader _loader)

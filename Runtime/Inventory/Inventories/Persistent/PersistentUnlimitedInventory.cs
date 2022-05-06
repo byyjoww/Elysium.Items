@@ -10,7 +10,18 @@ namespace Elysium.Items
     {
         private UnlimitedInventory inventory = default;
 
-        protected override IInventory Inventory => inventory;
+        protected override IInventory Inventory => UnlimitedInventory;
+        protected UnlimitedInventory UnlimitedInventory
+        {
+            get
+            {
+                if (inventory == null)
+                {
+                    CreateDefaultInventory();
+                }
+                return inventory;
+            }
+        }        
 
         public static PersistentUnlimitedInventory New(Guid _inventoryID)
         {

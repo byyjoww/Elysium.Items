@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elysium.Items.Editor
 {
-    public class InventorySOEditorBase : UnityEditor.Editor
+    public class InventoryEditorBase : UnityEditor.Editor
     {
         protected IInventory inventory = default;
 

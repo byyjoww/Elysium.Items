@@ -11,7 +11,14 @@ namespace Elysium.Items
     {
         [SerializeField] protected Guid inventoryID = default;
         protected abstract IInventory Inventory { get; }
-        public IItemStackCollection Items => Inventory.Items;
+        public IItemStackCollection Items
+        {
+            get
+            {
+                if (Inventory == null) { return new NullItemStackCollection(); }
+                return Inventory.Items;
+            }
+        }
 
         public event UnityAction OnValueChanged = delegate { };
         public event UnityAction<IPersistent> OnPersistentDataChanged = delegate { };
