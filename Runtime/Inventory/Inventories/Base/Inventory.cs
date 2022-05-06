@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace Elysium.Items

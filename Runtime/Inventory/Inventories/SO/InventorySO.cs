@@ -7,49 +7,49 @@ using UnityEngine.Events;
 
 namespace Elysium.Items
 {
-    public abstract class InventorySO : ScriptableObject, IInventory, IPersistent
+    public abstract class InventorySO : ScriptableObject, IPersistentInventory
     {
-        public Guid InventoryID { get; protected set; }
-        public abstract IItemStackCollection Items { get; }        
+        [SerializeField] protected Guid inventoryID = Guid.NewGuid();
+
+        protected abstract IInventory Inventory { get; }
+        public IItemStackCollection Items => Inventory.Items;
 
         public event UnityAction OnValueChanged = delegate { };
         public event UnityAction<IPersistent> OnPersistentDataChanged = delegate { };
 
         protected virtual void OnEnable()
         {
-            hideFlags = HideFlags.DontUnloadUnusedAsset;
-            Items.OnValueChanged.AddListener(TriggerOnValueChanged);
-            Items.OnValueChanged.AddListener(TriggerOnPersistentDataChanged);
+            hideFlags = HideFlags.DontUnloadUnusedAsset;            
         }
 
         public bool Add(IItem _item, int _quantity)
         {
-            return Items.Add(_item, _quantity);
+            return Inventory.Add(_item, _quantity);
         }
 
         public bool Remove(IItem _item, int _quantity)
         {
-            return Items.Remove(_item, _quantity);
+            return Inventory.Remove(_item, _quantity);
         }        
 
         public bool Contains(IItem _item)
         {
-            return Items.Contains(_item);
+            return Inventory.Contains(_item);
         }
 
         public int Quantity(IItem _item)
         {
-            return Items.Quantity(_item);
+            return Inventory.Quantity(_item);
         }
 
         public void Empty()
         {
-            Items.Empty();
+            Inventory.Empty();
         }
 
         public IEnumerator<IItemStack> GetEnumerator()
         {
-            return Items.GetEnumerator();
+            return Inventory.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -67,22 +67,14 @@ namespace Elysium.Items
             OnPersistentDataChanged?.Invoke(this);
         }
 
-        protected virtual void OnDisable()
+        protected virtual void OnDestroy()
         {
-            Items.OnValueChanged.RemoveAllListeners();
-        }
-
-        protected virtual void OnValidate()
-        {
-            
+            if (Inventory != null) { Inventory.OnValueChanged -= TriggerOnValueChanged; }            
         }
 
         public virtual void Reset()
         {
-            //EditorPlayStateNotifier.RegisterOnExitPlayMode(this, () =>
-            //{
-            //    items.Empty();
-            //});
+            
         }
 
         public abstract void Load(ILoader _loader);

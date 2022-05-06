@@ -270,19 +270,28 @@ namespace Elysium.Items.Tests
         [Test]
         public void TestPersistency()
         {
-            string id = Guid.NewGuid().ToString();
-            IItem item1 = new GenericItem(id, id);
+            string itemID = Guid.NewGuid().ToString();
+            IItem item1 = new GenericItem(itemID, itemID);
             SaveSystem saveSystem = new SaveSystem();
 
-            UnlimitedInventorySO[] unlimiteds = new UnlimitedInventorySO[]
-            {                
-                UnlimitedInventorySO.New(),
-                unltdInventoryAsset,
+            IPersistentInventory[] inventories = new IPersistentInventory[]
+            {
+                 UnlimitedInventorySO.New(),
+                 unltdInventoryAsset,
+                 PersistentUnlimitedInventory.New(Guid.NewGuid()),
+
+                 LimitedInventorySO.New(new Capacity { Default = 10 }),
+                 ltdInventoryAsset,
+                 PersistentLimitedInventory.New(Guid.NewGuid(), new Capacity { Default = 10 }),
             };
 
-            foreach (var inventory in unlimiteds)
+            foreach (var inventory in inventories)
             {
+                inventory.Load(saveSystem);
+                Assert.AreEqual(0, inventory.Quantity(item1));
+
                 Assert.True(inventory.Add(item1, 1));
+                Assert.AreEqual(1, inventory.Quantity(item1));
                 inventory.Save(saveSystem);
 
                 inventory.Empty();
@@ -290,30 +299,28 @@ namespace Elysium.Items.Tests
 
                 inventory.Load(saveSystem);
                 Assert.AreEqual(1, inventory.Quantity(item1));
+
+                if (inventory is IExpandable)
+                {
+                    inventory.Empty();
+                    inventory.Save(saveSystem);
+
+                    IExpandable expInventory = inventory as IExpandable;
+                    Assert.True(inventory.Add(item1, 1));
+                    Assert.True(expInventory.Expand(1));
+                    Assert.AreEqual(11, inventory.Items.Stacks.Count());
+                    inventory.Save(saveSystem);
+
+                    inventory.Empty();
+                    Assert.AreEqual(0, inventory.Quantity(item1));
+                    expInventory.Shrink(1, out _);
+                    Assert.AreEqual(10, inventory.Items.Stacks.Count());
+
+                    inventory.Load(saveSystem);
+                    Assert.AreEqual(1, inventory.Quantity(item1));
+                    Assert.AreEqual(11, inventory.Items.Stacks.Count());
+                }
             }
-
-            LimitedInventorySO[] limiteds = new LimitedInventorySO[]
-            {
-                LimitedInventorySO.New(new Capacity { Default = 10 }),
-                ltdInventoryAsset,
-            };
-
-            foreach (var inventory in limiteds)
-            {
-                Assert.True(inventory.Add(item1, 1));
-                Assert.True(inventory.Expand(1));
-                Assert.AreEqual(11, inventory.Items.Stacks.Count());
-                inventory.Save(saveSystem);
-
-                inventory.Empty();
-                Assert.AreEqual(0, inventory.Quantity(item1));
-                inventory.Shrink(1, out _);
-                Assert.AreEqual(10, inventory.Items.Stacks.Count());
-
-                inventory.Load(saveSystem);
-                Assert.AreEqual(1, inventory.Quantity(item1));
-                Assert.AreEqual(11, inventory.Items.Stacks.Count());
-            }     
         }        
 
         #endregion

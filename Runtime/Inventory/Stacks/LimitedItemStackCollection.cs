@@ -22,7 +22,7 @@ namespace Elysium.Items
         {
             if (_stacks.Count() > _currentCapacity)
             {
-                throw new System.Exception($"number of item stacks ({_stacks.Count()}) is smaller than inventory capacity ({_currentCapacity})");
+                throw new System.Exception($"number of item stacks ({_stacks.Count()}) is bigger than inventory capacity ({_currentCapacity})");
             }
 
             Capacity = new IntValueRange(_currentCapacity, _capacity.Min, _capacity.Max, _capacity.Default);
