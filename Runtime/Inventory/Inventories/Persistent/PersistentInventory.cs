@@ -69,6 +69,7 @@ namespace Elysium.Items
         protected void TriggerOnValueChanged()
         {
             OnValueChanged?.Invoke();
+            OnPersistentDataChanged?.Invoke(this);
         }
 
         protected virtual void OnDestroy()

@@ -16,9 +16,4 @@ namespace Elysium.Items
 
         void Use(IItemStack _stack, IItemUser _user);
     }
-
-    public interface IItem<T> : IItem where T : IItemUser
-    {
-        void Use(IItemStack _stack, T _user);
-    }
 }

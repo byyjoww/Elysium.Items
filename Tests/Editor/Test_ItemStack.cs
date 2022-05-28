@@ -39,7 +39,7 @@ namespace Elysium.Items.Tests
                     onValueChangedTriggers = 0;
                     int prev = stack.Quantity;
                     stack.Add(number);
-                    Assert.AreEqual(stack.Quantity, prev+number);
+                    Assert.AreEqual(prev + number, stack.Quantity);
                     Assert.AreEqual(1, onValueChangedTriggers);
                 }
 
@@ -99,10 +99,10 @@ namespace Elysium.Items.Tests
                 void TriggerOnValueChanged() => onValueChangedTriggers++;
                 stack.OnValueChanged += TriggerOnValueChanged;
 
-                Assert.AreNotEqual(stack.Item, item1);
+                Assert.AreNotEqual(item1, stack.Item);
 
                 stack.Set(item1);
-                Assert.AreEqual(stack.Item, item1);
+                Assert.AreEqual(item1, stack.Item);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -131,10 +131,10 @@ namespace Elysium.Items.Tests
 
                 int randomItemAmount = UnityEngine.Random.Range(2, 9999);
 
-                Assert.AreNotEqual(stack.Quantity, randomItemAmount);
+                Assert.AreNotEqual(randomItemAmount, stack.Quantity);
 
                 stack.Set(randomItemAmount);
-                Assert.AreEqual(stack.Quantity, randomItemAmount);
+                Assert.AreEqual(randomItemAmount, stack.Quantity);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -157,13 +157,13 @@ namespace Elysium.Items.Tests
                 stack.OnValueChanged += TriggerOnValueChanged;
 
                 Assert.False(stack.IsEmpty);
-                Assert.AreNotEqual(stack.Item, new NullItem());
-                Assert.AreNotEqual(stack.Quantity, 0);
+                Assert.AreNotEqual(new NullItem(), stack.Item);
+                Assert.AreNotEqual(0, stack.Quantity);
 
                 stack.Set(0);
                 Assert.True(stack.IsEmpty);
-                Assert.AreEqual(stack.Item, new NullItem());
-                Assert.AreEqual(stack.Quantity, 0);
+                Assert.AreEqual(new NullItem(), stack.Item);
+                Assert.AreEqual(0, stack.Quantity);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -192,12 +192,12 @@ namespace Elysium.Items.Tests
 
                 int randomItemAmount = UnityEngine.Random.Range(2, 9999);
 
-                Assert.AreNotEqual(stack.Item, item1);
-                Assert.AreNotEqual(stack.Quantity, randomItemAmount);
+                Assert.AreNotEqual(item1, stack.Item);
+                Assert.AreNotEqual(randomItemAmount, stack.Quantity);
 
                 stack.Set(item1, randomItemAmount);
-                Assert.AreEqual(stack.Item, item1);
-                Assert.AreEqual(stack.Quantity, randomItemAmount);
+                Assert.AreEqual(item1, stack.Item);
+                Assert.AreEqual(randomItemAmount, stack.Quantity);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -220,13 +220,13 @@ namespace Elysium.Items.Tests
                 stack.OnValueChanged += TriggerOnValueChanged;
 
                 Assert.False(stack.IsEmpty);
-                Assert.AreNotEqual(stack.Item, new NullItem());
-                Assert.AreNotEqual(stack.Quantity, 0);
+                Assert.AreNotEqual(new NullItem(), stack.Item);
+                Assert.AreNotEqual(0, stack.Quantity);
 
                 stack.Empty();
                 Assert.True(stack.IsEmpty);
-                Assert.AreEqual(stack.Item, new NullItem());
-                Assert.AreEqual(stack.Quantity, 0);
+                Assert.AreEqual(new NullItem(), stack.Item);
+                Assert.AreEqual(0, stack.Quantity);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -269,11 +269,11 @@ namespace Elysium.Items.Tests
 
                 stack1.SwapContents(stack2);
 
-                Assert.AreEqual(stack1.Item, itemS2);
-                Assert.AreEqual(stack2.Item, itemS1);
+                Assert.AreEqual(itemS2, stack1.Item);
+                Assert.AreEqual(itemS1, stack2.Item);
 
-                Assert.AreEqual(stack1.Quantity, qtyS2);
-                Assert.AreEqual(stack2.Quantity, qtyS1);
+                Assert.AreEqual(qtyS2, stack1.Quantity);
+                Assert.AreEqual(qtyS1, stack2.Quantity);
 
                 Assert.AreEqual(1, stack1OnValueChangedTriggers);
                 Assert.AreEqual(1, stack2OnValueChangedTriggers);

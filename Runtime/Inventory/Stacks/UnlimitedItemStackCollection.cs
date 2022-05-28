@@ -17,7 +17,7 @@ namespace Elysium.Items
         public UnlimitedItemStackCollection(IEnumerable<IItemStack> _stacks)
         {
             stacks = _stacks.ToList();
-            stacks.ForEach(x => x.OnValueChanged += TriggerOnValueChanged);
+            stacks.ForEach(x => BindStacks(x));
         }
 
         public override bool Add(IItem _item, int _quantity)
@@ -126,8 +126,7 @@ namespace Elysium.Items
         }
 
         protected virtual void BindStacks(IItemStack _stack)
-        {
-            _stack.OnValueChanged += TriggerOnValueChanged;
+        {            
             void CullStack()
             {
                 _stack.OnEmpty -= CullStack;
@@ -135,6 +134,8 @@ namespace Elysium.Items
                 stacks.Remove(_stack);
                 TriggerOnValueChanged();
             }
+
+            _stack.OnValueChanged += TriggerOnValueChanged;
             _stack.OnEmpty += CullStack;
         }
     }
