@@ -13,7 +13,8 @@ namespace Elysium.Items.UI
     public class TMPDropdownItemFilterer : IItemFilterer
     {
         [SerializeField] private bool enabled = false;
-        [SerializeField, ConditionalField("enabled")] private TMP_Dropdown dropdown = default;
+        [ConditionalField("enabled")]
+        [SerializeField] private TMP_Dropdown dropdown = default;
 
         protected IItemFilterConfig config = default;
         protected IFilter<IItem> active = default;

@@ -10,7 +10,8 @@ namespace Elysium.Items.UI
         [SerializeField] private bool hideEmptySlots = false;
         [SerializeField] private int numOfLastRowElements = 0;
         [SerializeField] private bool minNumOfSlotsByCapacity = true;
-        [SerializeField, ConditionalField("minNumOfSlotsByCapacity", true)] private int minNumberOfSlots = 0;
+        [ConditionalField("minNumOfSlotsByCapacity", true)]
+        [SerializeField] private int minNumberOfSlots = 0;
 
         public bool EnableSwapping => enableSwapping;
         public bool HideEmptySlots => hideEmptySlots;
