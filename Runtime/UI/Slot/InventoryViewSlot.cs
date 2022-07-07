@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Elysium.Items.UI
 {
-    public class VisualInventorySlot : MonoBehaviour, IVisualInventorySlot, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+    public class InventoryViewSlot : MonoBehaviour, IInventoryViewSlot, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
         [Header("Icon")]
         [SerializeField] protected Image icon = default;
@@ -48,17 +48,17 @@ namespace Elysium.Items.UI
             pointerResolver.OnClick += OnClick;
             pointerResolver.OnHoldStart += OnHoldStart;
             pointerResolver.OnHoldEnd += OnHoldEnd;
-            draggable.OnDragBegin += pointerResolver.OnHoldOverride;
+            draggable.OnDragBegin += TriggerOnHoldOverride;
 
             hoverResolver.OnHoverStart += OnHoverStart;
             hoverResolver.OnHoverEnd += OnHoverEnd;
-            Draggable.OnAnyDragBegin += hoverResolver.OnPointerExit;
+            Draggable.OnAnyDragBegin += TriggerOnPointerExit;
 
             defaultSprite = icon.sprite;
             enabled = false;
         }
 
-        public virtual void Setup(VisualInventorySlotConfig _config)
+        public virtual void Setup(IInventoryViewSlotConfig _config)
         {
             enabled = true;
             this.stack = _config.Stack;
@@ -118,7 +118,7 @@ namespace Elysium.Items.UI
 
         private void RequestStackSwap(IDraggable _draggable)
         {            
-            if (_draggable.gameObject.TryGetComponent(out IVisualInventorySlot slot))
+            if (_draggable.gameObject.TryGetComponent(out IInventoryViewSlot slot))
             {                
                 slot.Swap(stack);
             }
@@ -145,6 +145,16 @@ namespace Elysium.Items.UI
             pointerResolver.OnPointerUp();
         }
 
+        private void TriggerOnHoldOverride(PointerEventData _data)
+        {
+            pointerResolver.OnHoldOverride();
+        }
+
+        private void TriggerOnPointerExit(PointerEventData _data)
+        {
+            hoverResolver.OnPointerExit();
+        }
+
         private void OnDestroy()
         {            
             droppable.OnReceiveDrop -= RequestStackSwap;
@@ -152,11 +162,11 @@ namespace Elysium.Items.UI
             pointerResolver.OnClick -= OnClick;
             pointerResolver.OnHoldStart -= OnHoldStart;
             pointerResolver.OnHoldEnd -= OnHoldEnd;
-            draggable.OnDragBegin -= pointerResolver.OnHoldOverride;
+            draggable.OnDragBegin -= TriggerOnHoldOverride;
 
             hoverResolver.OnHoverStart -= OnHoverStart;
             hoverResolver.OnHoverEnd -= OnHoverEnd;
-            Draggable.OnAnyDragBegin -= hoverResolver.OnPointerExit;
+            Draggable.OnAnyDragBegin -= TriggerOnPointerExit;
         }
     }    
 }

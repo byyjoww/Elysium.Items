@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Elysium.Items.UI
 {
     [System.Serializable]
-    public class VisualInventoryConfig
+    public class InventoryPresenterConfig
     {
         [SerializeField] private bool enableSwapping = true;
         [SerializeField] private bool hideEmptySlots = false;

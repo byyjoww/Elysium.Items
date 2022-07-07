@@ -12,14 +12,14 @@ namespace Elysium.Items.Samples
         [SerializeField] private SampleItemUser itemUser = default;
         [SerializeField] private GameObject inventoryPanel = default;
         [SerializeField] private ItemFilterConfigSO filterConfig = default;
-        [SerializeField] private VisualInventorySlotPoolView view = default;
-        [SerializeField] private VisualInventorySlotPoolView overrideView = default;
-        [SerializeField] private VisualInventoryConfig inventoryConfig = default;
+        [SerializeField] private InventoryViewSlotPoolSpawner view = default;
+        [SerializeField] private InventoryViewSlotPoolSpawner overrideView = default;
+        [SerializeField] private InventoryPresenterConfig inventoryConfig = default;
         [SerializeField] private TMPDropdownItemFilterer inventoryFilterer = default;
 
         private IInventory inventory = default;
-        private IVisualInventory visualInventory = default;
-        private IVisualInventory visualInventoryOverride = default;
+        private IInventoryPresenter presenter = default;
+        private IInventoryPresenter presenterOverride = default;
         private IEnumerable<IItem> items = default;
 
         void Start()
@@ -44,8 +44,8 @@ namespace Elysium.Items.Samples
                 ItemStack.WithContents(items.ElementAt(5), 1),
             });
 
-            visualInventory = new VisualInventory(inventoryConfig, inventoryFilterer, view, inventoryPanel);
-            visualInventoryOverride = new VisualInventoryOverride(inventoryConfig, new StaticDefaultItemFilterer(), overrideView, inventoryPanel);
+            presenter = new InventoryPresenter(inventoryConfig, inventoryFilterer, view, inventoryPanel);
+            presenterOverride = new InventoryPresenterOverride(inventoryConfig, new StaticDefaultItemFilterer(), overrideView, inventoryPanel);
 
             OpenInventory();
         }
@@ -57,14 +57,14 @@ namespace Elysium.Items.Samples
 
         public void OpenInventory()
         {
-            visualInventoryOverride.Close();
-            visualInventory.Open(inventory, filterConfig, new LoggedUseItemEvent(itemUser));
+            presenterOverride.Hide();
+            presenter.Show(inventory, filterConfig, new LoggedUseItemEvent(itemUser));
         }
 
         public void OpenInventoryOverride()
         {
-            visualInventory.Close();
-            visualInventoryOverride.Open(inventory, filterConfig, new LoggedUseItemEvent(itemUser));
+            presenter.Hide();
+            presenterOverride.Show(inventory, filterConfig, new LoggedUseItemEvent(itemUser));
         }
     }
 }

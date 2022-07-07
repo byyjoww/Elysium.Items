@@ -1,6 +1,6 @@
 ﻿namespace Elysium.Items.UI
 {
-    public class VisualInventorySlotConfig
+    public class IInventoryViewSlotConfig
     {
         public IItemStack Stack { get; set; }
         public IUseItemEvent Event { get; set; }

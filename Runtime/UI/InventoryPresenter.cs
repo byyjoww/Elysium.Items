@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Elysium.Items.UI
 {
-    public class VisualInventory : IVisualInventory
+    public class InventoryPresenter : IInventoryPresenter
     {        
-        protected VisualInventoryConfig config = default;
+        protected InventoryPresenterConfig config = default;
         protected IItemFilterer filter = default;
-        protected IInventorySlotView view = default;
+        protected IInventoryViewSlotSpawner view = default;
         protected GameObject inventoryPanel = default;
         protected IInventory inventory = new NullInventory();
         protected IUseItemEvent useItemEvent = new NullUseItemEvent();
@@ -16,7 +16,7 @@ namespace Elysium.Items.UI
 
         protected virtual int NumOfSlots => config.MinNumOfSlotsByCapacity ? inventory.Items.Stacks.Count() : Mathf.Max(config.MinNumberOfSlots, inventory.Items.Stacks.Count());
 
-        public VisualInventory(VisualInventoryConfig _config, IItemFilterer _filter, IInventorySlotView _view, GameObject _inventoryPanel)
+        public InventoryPresenter(InventoryPresenterConfig _config, IItemFilterer _filter, IInventoryViewSlotSpawner _view, GameObject _inventoryPanel)
         {
             this.config = _config;
             this.filter = _filter;
@@ -24,7 +24,7 @@ namespace Elysium.Items.UI
             this.inventoryPanel = _inventoryPanel;
         }
 
-        public void Open(IInventory _inventory, IItemFilterConfig _config, IUseItemEvent _event)
+        public void Show(IInventory _inventory, IItemFilterConfig _config, IUseItemEvent _event)
         {
             if (open) { return; }
             this.useItemEvent = _event;
@@ -35,7 +35,7 @@ namespace Elysium.Items.UI
             open = true;
         }
 
-        public virtual void Close()
+        public virtual void Hide()
         {
             if (!open) { return; }
             Deregister();
@@ -65,15 +65,15 @@ namespace Elysium.Items.UI
             var ordered = inventory.Items.Stacks.OrderByDescending(x => !Invisible(x)).ToList();
             for (int i = 0; i < numOfSlots; i++)
             {
-                IVisualInventorySlot slot = objs.ElementAt(i);
+                IInventoryViewSlot slot = objs.ElementAt(i);
                 IItemStack stack = GetStack(ordered, i);
                 ConfigureSlot(slot, stack);
             }
         }
 
-        protected virtual void ConfigureSlot(IVisualInventorySlot _slot, IItemStack _stack)
+        protected virtual void ConfigureSlot(IInventoryViewSlot _slot, IItemStack _stack)
         {
-            _slot.Setup(new VisualInventorySlotConfig
+            _slot.Setup(new IInventoryViewSlotConfig
             {
                 Stack = _stack,
                 Event = _stack.Item.IsUsable ? useItemEvent : new NullUseItemEvent(),

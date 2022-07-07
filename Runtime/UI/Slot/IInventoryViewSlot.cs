@@ -2,9 +2,9 @@
 
 namespace Elysium.Items.UI
 {
-    public interface IVisualInventorySlot
+    public interface IInventoryViewSlot
     {
-        void Setup(VisualInventorySlotConfig _config);
+        void Setup(IInventoryViewSlotConfig _config);
         void Swap(IItemStack _stack);
     }
 }

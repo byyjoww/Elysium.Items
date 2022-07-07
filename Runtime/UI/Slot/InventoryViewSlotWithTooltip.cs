@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Elysium.Items.UI
 {
-    public class VisualInventorySlotWithTooltip : VisualInventorySlot
+    public class InventoryViewSlotWithTooltip : InventoryViewSlot
     {
         [Header("Tooltip")]
         [SerializeField, RequireInterface(typeof(ITooltip))] 
